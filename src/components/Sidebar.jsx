@@ -20,7 +20,7 @@ export default function Sidebar() {
     { key: '/store', icon: <ShopOutlined />, label: 'Store' },
     { key: '/favorite', icon: <HeartOutlined />, label: 'Favorite' },
     { key: '/payments', icon: <CreditCardOutlined />, label: 'Payment' },
-    { key: '/users', icon: <UserOutlined />, label: 'User' },
+    { key: '/user-management', icon: <UserOutlined />, label: 'Manajemen User' },
     { key: '/transactions', icon: <SwapOutlined />, label: 'Transaksi' },
     { key: '/review', icon: <StarOutlined />, label: 'Review' },
     { key: '/logout', icon: <LogoutOutlined />, label: 'Logout' },
@@ -33,7 +33,7 @@ export default function Sidebar() {
       selectedKeys={[location.pathname]}
       onClick={({ key }) => navigate(key)}
       items={menuItems}
-      className="h-full pt-6 text-base"
+      style={{ height: '100%', paddingTop: 20 }}
     />
   );
 }
