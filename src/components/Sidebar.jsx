@@ -35,5 +35,6 @@ export default function Sidebar() {
       items={menuItems}
       style={{ height: '100%', paddingTop: 20 }}
     />
+    
   );
 }
