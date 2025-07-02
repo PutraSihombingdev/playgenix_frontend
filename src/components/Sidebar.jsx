@@ -35,5 +35,6 @@ export default function Sidebar() {
       items={menuItems}
       className="h-full pt-6 text-base"
     />
+    
   );
 }
