@@ -15,15 +15,57 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleMenuClick = ({ key }) => {
+    if (key === '/logout') {
+      // Tambahkan logika logout di sini
+      console.log('Logout clicked');
+      // Misalnya: localStorage.clear(); navigate('/login');
+    } else {
+      navigate(key);
+    }
+  };
+
   const menuItems = [
-    { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
-    { key: '/store', icon: <ShopOutlined />, label: 'Store' },
-    { key: '/favorite', icon: <HeartOutlined />, label: 'Favorite' },
-    { key: '/payments', icon: <CreditCardOutlined />, label: 'Payment' },
-    { key: '/user-management', icon: <UserOutlined />, label: 'Manajemen User' },
-    { key: '/transactions', icon: <SwapOutlined />, label: 'Transaksi' },
-    { key: '/review', icon: <StarOutlined />, label: 'Review' },
-    { key: '/logout', icon: <LogoutOutlined />, label: 'Logout' },
+    {
+      key: '/',
+      icon: <DashboardOutlined />,
+      label: 'Dashboard',
+    },
+    {
+      key: '/store',
+      icon: <ShopOutlined />,
+      label: 'Store',
+    },
+    {
+      key: '/favorite',
+      icon: <HeartOutlined />,
+      label: 'Favorite',
+    },
+    {
+      key: '/payments',
+      icon: <CreditCardOutlined />,
+      label: 'Payment',
+    },
+    {
+      key: '/user-management',
+      icon: <UserOutlined />,
+      label: 'Manajemen User',
+    },
+    {
+      key: '/transactions',
+      icon: <SwapOutlined />,
+      label: 'Transaksi',
+    },
+    {
+      key: '/review',
+      icon: <StarOutlined />,
+      label: 'Review',
+    },
+    {
+      key: '/logout',
+      icon: <LogoutOutlined />,
+      label: 'Logout',
+    },
   ];
 
   return (
@@ -31,9 +73,13 @@ export default function Sidebar() {
       mode="inline"
       theme="dark"
       selectedKeys={[location.pathname]}
-      onClick={({ key }) => navigate(key)}
+      onClick={handleMenuClick}
       items={menuItems}
-      style={{ height: '100%', paddingTop: 20 }}
+      style={{
+        height: '100%',
+        paddingTop: 20,
+        borderRight: 0,
+      }}
     />
   );
 }
