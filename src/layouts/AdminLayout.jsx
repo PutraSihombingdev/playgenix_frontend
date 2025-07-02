@@ -1,7 +1,7 @@
 import { Layout } from 'antd';
 import Sidebar from '../components/Sidebar';
 
-const { Sider, Content } = Layout;
+const { Content, Sider } = Layout;
 
 export default function AdminLayout({ children }) {
   return (
@@ -29,15 +29,12 @@ export default function AdminLayout({ children }) {
       <Layout
         className="ml-[220px] !bg-[#1f1f1f]"
         style={{
-          marginLeft: 220, // fix if Tailwind fails
+          marginLeft: 220,
           minHeight: '100vh',
           backgroundColor: '#1f1f1f',
         }}
       >
-        <Content
-          className="p-6 text-white"
-          style={{ overflowY: 'auto' }}
-        >
+        <Content className="p-6 text-white" style={{ overflowY: 'auto' }}>
           {children}
         </Content>
       </Layout>
