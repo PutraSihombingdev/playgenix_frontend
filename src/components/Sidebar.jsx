@@ -30,7 +30,6 @@ export default function Sidebar() {
     { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
     { key: '/store', icon: <ShopOutlined />, label: 'Store' },
     { key: '/cart', icon: <ShoppingCartOutlined />, label: 'Cart' },
-    { key: '/favorite', icon: <HeartOutlined />, label: 'Favorite' },
     { key: '/payments', icon: <CreditCardOutlined />, label: 'Payment' },
     { key: '/user-management', icon: <UserOutlined />, label: 'Manajemen User' },
     { key: '/transactions', icon: <SwapOutlined />, label: 'Transaksi' },

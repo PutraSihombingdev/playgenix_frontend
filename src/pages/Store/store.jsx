@@ -29,7 +29,7 @@ const dummyData = [
     rank: 'Grand Master',
     skin: 230,
     description: 'Sg Unggu, AK Draco Max 1, dll',
-    image: 'https://via.placeholder.com/300x160.png?text=Free+Fire'
+    image: 'https://i.pinimg.com/736x/55/96/d8/5596d8307a14cee7b413e77fc5b7fc09.jpg'
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const dummyData = [
     rank: 'Immortal 1',
     skin: 12,
     description: 'Bundle Reaver, Prime Vandal, akun aktif',
-    image: 'https://via.placeholder.com/300x160.png?text=Valorant'
+    image: 'https://i.pinimg.com/736x/1e/2d/54/1e2d548c8da2ffbc1fa17ed77c99d450.jpg'
   },
   {
     id: 4,
@@ -49,7 +49,7 @@ const dummyData = [
     rank: 'Ace',
     skin: 80,
     description: 'Outfit lengkap, skin senjata M416 Glacier',
-    image: 'https://via.placeholder.com/300x160.png?text=PUBG'
+    image: 'https://i.pinimg.com/736x/df/84/af/df84affdbd5952b3e7a85606c0caf0ff.jpg'
   },
 ];
 
