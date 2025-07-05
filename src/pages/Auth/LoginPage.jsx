@@ -9,7 +9,7 @@ export default function LoginPage() {
   const navigate = useNavigate(); // ✅ Gunakan navigasi
 
   const onFinish = (values) => {
-    console.log('Login success:', values);
+    console.log('Login berhasil:', values);
     // Simulasi login sukses, lalu arahkan ke dashboard
     navigate('/'); // ✅ Arahkan ke halaman dashboard
   };
