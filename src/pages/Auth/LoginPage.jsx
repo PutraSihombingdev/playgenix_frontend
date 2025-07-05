@@ -1,36 +1,36 @@
 import { Form, Input, Button, Typography, Card } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom'; // ✅ Tambahkan ini
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../../layouts/AuthLayout';
 
 const { Title } = Typography;
 
 export default function LoginPage() {
-  const navigate = useNavigate(); // ✅ Gunakan navigasi
+  const navigate = useNavigate();
 
   const onFinish = (values) => {
-    console.log('Login success:', values);
-    // Simulasi login sukses, lalu arahkan ke dashboard
-    navigate('/'); // ✅ Arahkan ke halaman dashboard
+    // Simulasi login sukses
+    navigate('/');
   };
 
   return (
     <AuthLayout>
-      <div className="min-h-screen flex items-center justify-center bg-[#1a1a1a] px-4">
+      <div style={{ minHeight: '100vh', background: '#232323', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
         <Card
-          className="w-full max-w-md shadow-lg"
           style={{
-            backgroundColor: '#2c2c2e',
-            borderRadius: '12px',
+            background: '#2c2c2c',
+            borderRadius: 14,
+            border: 'none',
             color: '#fff',
+            width: 370,
+            boxShadow: '0 2px 8px #0004',
           }}
-          bodyStyle={{ padding: '32px' }}
+          bodyStyle={{ padding: 36 }}
         >
-          <div className="text-center mb-6">
-            <Title level={3} style={{ color: '#fff', marginBottom: 0 }}>
-              Login Akun
-            </Title>
-            <p className="text-gray-400">Silakan masuk untuk melanjutkan</p>
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <Title level={3} style={{ color: '#4e8cff', marginBottom: 4, fontWeight: 700, letterSpacing: 1 }}>PlayGenix</Title>
+            <div style={{ color: '#fff', fontSize: 15, marginBottom: 2 }}>Login Akun</div>
+            <div style={{ color: '#fff', fontSize: 13 }}>Masuk untuk melanjutkan</div>
           </div>
 
           <Form
@@ -38,47 +38,88 @@ export default function LoginPage() {
             layout="vertical"
             onFinish={onFinish}
             requiredMark={false}
+            autoComplete="off"
           >
             <Form.Item
               name="username"
-              label={<span style={{ color: '#fff' }}>Username</span>}
+              label={<span style={{ color: '#fff', fontWeight: 500 }}>Username</span>}
               rules={[{ required: true, message: 'Masukkan username!' }]}
             >
               <Input
-                prefix={<UserOutlined className="text-gray-400" />}
+                prefix={<UserOutlined style={{ color: '#4e8cff' }} />}
                 placeholder="Username"
-                style={{ backgroundColor: '#1f1f1f', color: '#fff' }}
+                style={{
+                  background: '#232323',
+                  color: '#fff',
+                  border: '1px solid #444',
+                  borderRadius: 8,
+                  height: 44,
+                }}
               />
             </Form.Item>
 
             <Form.Item
               name="password"
-              label={<span style={{ color: '#fff' }}>Password</span>}
+              label={<span style={{ color: '#fff', fontWeight: 500 }}>Password</span>}
               rules={[{ required: true, message: 'Masukkan password!' }]}
             >
               <Input.Password
-                prefix={<LockOutlined className="text-gray-400" />}
+                prefix={<LockOutlined style={{ color: '#4e8cff' }} />}
                 placeholder="Password"
-                style={{ backgroundColor: '#1f1f1f', color: '#fff' }}
+                style={{
+                  background: '#232323',
+                  color: '#fff',
+                  border: '1px solid #444',
+                  borderRadius: 8,
+                  height: 44,
+                }}
               />
             </Form.Item>
 
-            <Form.Item>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+              <div />
+              <a href="#" style={{ color: '#4e8cff', fontSize: 13, textDecoration: 'none' }}>Lupa password?</a>
+            </div>
+
+            <Form.Item style={{ marginBottom: 0 }}>
               <Button
                 type="primary"
                 htmlType="submit"
-                className="w-full"
                 style={{
-                  backgroundColor: '#722ed1',
-                  borderColor: '#722ed1',
-                  fontWeight: 'bold',
+                  width: '100%',
+                  height: 44,
+                  background: '#4e8cff',
+                  border: 'none',
+                  borderRadius: 8,
+                  color: '#fff',
+                  fontWeight: 600,
+                  fontSize: 16,
+                  letterSpacing: 1,
                 }}
               >
-                Login
+                Masuk
               </Button>
             </Form.Item>
           </Form>
+
+          <div style={{ textAlign: 'center', marginTop: 28 }}>
+            <span style={{ color: '#fff', fontSize: 14 }}>Belum punya akun?{' '}</span>
+            <a href="/register" style={{ color: '#4e8cff', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>Daftar sekarang</a>
+          </div>
         </Card>
+        {/* Custom style for white placeholder and eye icon */}
+        <style>{`
+          input::placeholder, .ant-input::placeholder, .ant-input-password input::placeholder {
+            color: #fff !important;
+            opacity: 1 !important;
+          }
+          .ant-input-password-icon {
+            color: #fff !important;
+          }
+          .ant-input-password-icon:hover, .ant-input-password-icon:focus {
+            color: #fff !important;
+          }
+        `}</style>
       </div>
     </AuthLayout>
   );

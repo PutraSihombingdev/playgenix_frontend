@@ -19,8 +19,8 @@ export default function Sidebar() {
   const handleMenuClick = ({ key }) => {
     if (key === '/logout') {
       console.log('Logout clicked');
-      // localStorage.clear();
-      // navigate('/login');
+      localStorage.clear();
+      navigate('/login');
     } else {
       navigate(key);
     }
@@ -29,6 +29,7 @@ export default function Sidebar() {
   const menuItems = [
     { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
     { key: '/store', icon: <ShopOutlined />, label: 'Store' },
+    { key: '/store-user', icon: <ShopOutlined />, label: 'Store User' },
     { key: '/cart', icon: <ShoppingCartOutlined />, label: 'Cart' },
     { key: '/payments', icon: <CreditCardOutlined />, label: 'Payment' },
     { key: '/user-management', icon: <UserOutlined />, label: 'Manajemen User' },
