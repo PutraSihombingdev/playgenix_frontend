@@ -73,7 +73,7 @@ const CartPage = () => {
               <div style={{ flex: '0 0 23%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center', gap: 12 }}>
                 <div style={{ color: '#bdbdbd', fontSize: 13 }}>Added on {item.added}</div>
                 <div style={{ fontWeight: 600, fontSize: 22 }}>Rp {item.price.toLocaleString('id-ID')}</div>
-                <button onClick={() => navigate('/payment-method', { state: { item } })} style={{ background: '#4e8cff', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 32px', fontWeight: 500, fontSize: 16, cursor: 'pointer' }}>Beli</button>
+                <button onClick={() => navigate('/payments', { state: { item } })} style={{ background: '#4e8cff', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 32px', fontWeight: 500, fontSize: 16, cursor: 'pointer' }}>Beli</button>
                 <input type="checkbox" checked={item.checked} onChange={() => handleCheck(item.id)} style={{ width: 22, height: 22, accentColor: '#4e8cff', cursor: 'pointer' }} />
               </div>
             </div>
