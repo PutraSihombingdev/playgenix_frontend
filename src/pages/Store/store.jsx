@@ -8,7 +8,7 @@ import {
   DeleteOutlined,
   EyeOutlined
 } from '@ant-design/icons';
-import AdminLayout from '../layouts/AdminLayout';
+import AdminLayout from '../../layouts/AdminLayout';
 
 const dummyData = [
   {

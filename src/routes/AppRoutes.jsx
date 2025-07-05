@@ -1,6 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
-import StoreListPage from '../pages/Store/StoreListPage';
+import StoreListPage from '../pages/Store/store';
+import CartPage from '../pages/CartPage/CartPage';
+import PaymentMethodPage from '../pages/Payments/PaymentMethodPage';
+import UserManagement from '../pages/Users/UserManagement';
 
 
 export default function AppRoutes() {
@@ -8,6 +11,11 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<DashboardPage />} />
       <Route path="/store" element={<StoreListPage />} />
+      <Route path="/cart" element={<CartPage />} />
+      <Route path="/payments" element={<PaymentMethodPage />} />
+      <Route path="/user-management" element={<UserManagement />} />
+      
+
 
     </Routes>
   );

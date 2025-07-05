@@ -89,7 +89,7 @@ const CartPage = () => {
                 <span role="img" aria-label="delete" style={{ fontSize: 28, color: '#ff4e4e' }}>🗑️</span>
               </button>
               <br />
-              <button onClick={() => navigate('/payment-method')} style={{ background: '#4e8cff', color: '#fff', border: 'none', borderRadius: 6, padding: '12px 32px', fontWeight: 500, fontSize: 16, cursor: 'pointer' }}>Pilih metode pembayaran</button>
+              <button onClick={() => navigate('/payments')} style={{ background: '#4e8cff', color: '#fff', border: 'none', borderRadius: 6, padding: '12px 32px', fontWeight: 500, fontSize: 16, cursor: 'pointer' }}>Pilih metode pembayaran</button>
             </div>
           </div>
         </div>
