@@ -81,7 +81,21 @@ const CartPage = () => {
           <div style={{ background: '#2c2c2c', borderRadius: 12, marginTop: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 36, boxShadow: '0 2px 8px #0002', width: '100%' }}>
             <div>
               <div style={{ color: '#fff', fontWeight: 500, fontSize: 20, marginBottom: 24 }}>Estimasi total</div>
-              <button style={{ background: '#232c34', color: '#fff', border: 'none', borderRadius: 6, padding: '12px 32px', fontWeight: 500, fontSize: 16, cursor: 'pointer' }}>Lanjut Belanja</button>
+               <button
+      style={{
+        background: '#232c34',
+        color: '#fff',
+        border: 'none',
+        borderRadius: 6,
+        padding: '12px 32px',
+        fontWeight: 500,
+        fontSize: 16,
+        cursor: 'pointer'
+      }}
+      onClick={() => navigate('/store')} // navigasi ke route /store
+    >
+      Lanjut Belanja
+    </button>
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontWeight: 600, fontSize: 30, marginBottom: 8 }}>Rp {total.toLocaleString('id-ID')}</div>
