@@ -47,32 +47,37 @@ export default function UserManagement() {
 
   const columns = [
     {
-      title: 'User',
+      title: <span style={{ color: '#ccc' }}>User</span>,
       dataIndex: 'name',
-      render: (text, record) => (
+      render: (_, record) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Avatar icon={<UserOutlined />} />
           <div>
-            <div style={{ fontWeight: 600, color: '#e0e0e0' }}>{record.name}</div>
+            <div style={{ fontWeight: 600, color: '#fff' }}>{record.name}</div>
             <div style={{ fontSize: 13, color: '#999' }}>{record.email}</div>
           </div>
         </div>
       ),
     },
     {
-      title: 'Mobile',
+      title: <span style={{ color: '#ccc' }}>Mobile</span>,
       dataIndex: 'mobile',
       render: (text) => <span style={{ color: '#fff' }}>{text}</span>,
     },
     {
-      title: 'Status',
+      title: <span style={{ color: '#ccc' }}>Status</span>,
       dataIndex: 'status',
       render: (status) => (
-        <Tag color={status === 'Login' ? 'green' : 'red'}>{status}</Tag>
+        <Tag
+          color={status === 'Login' ? 'green' : 'red'}
+          style={{ borderRadius: 4, padding: '2px 8px', fontWeight: 500 }}
+        >
+          {status}
+        </Tag>
       ),
     },
     {
-      title: 'Aksi',
+      title: <span style={{ color: '#ccc' }}>Aksi</span>,
       render: () => (
         <Space size="middle">
           <Button shape="circle" icon={<EditOutlined />} />
@@ -96,7 +101,7 @@ export default function UserManagement() {
 
         <Card
           style={{
-            backgroundColor: '#2a2a2a',
+            backgroundColor: '#2c2c2e',
             borderRadius: 12,
             border: '1px solid #333',
           }}
@@ -115,7 +120,8 @@ export default function UserManagement() {
               type="primary"
               icon={<PlusOutlined />}
               style={{
-                backgroundColor: '#1677ff',
+                backgroundColor: '#722ed1',
+                borderColor: '#722ed1',
                 borderRadius: 6,
               }}
             >
@@ -134,7 +140,6 @@ export default function UserManagement() {
                 border: '1px solid #555',
                 borderRadius: 6,
               }}
-              className="custom-search"
             />
           </div>
 
@@ -142,12 +147,26 @@ export default function UserManagement() {
             columns={columns}
             dataSource={filtered}
             pagination={{ pageSize: 5 }}
-            bordered
-            className="custom-table"
-            rowClassName={() => 'custom-row'}
+            bordered={false}
+            className="dark-table"
+            rowClassName={() => 'dark-row'}
           />
         </Card>
       </div>
+
+      <style>{`
+        .dark-table .ant-table-thead > tr > th {
+          background-color: #1e1e1e !important;
+          color: #ccc !important;
+        }
+        .dark-table .ant-table-tbody > tr > td {
+          background-color: #1a1a1a !important;
+          color: #fff !important;
+        }
+        .dark-row:hover > td {
+          background-color: #333 !important;
+        }
+      `}</style>
     </AdminLayout>
   );
 }
