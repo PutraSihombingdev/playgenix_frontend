@@ -9,8 +9,9 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const onFinish = (values) => {
-    // Simulasi login sukses
-    navigate('/');
+    console.log('Login success:', values);
+    // Simulasi login sukses, lalu arahkan ke dashboard
+    navigate('/'); // ✅ Arahkan ke halaman dashboard
   };
 
   return (

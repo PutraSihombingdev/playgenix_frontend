@@ -1,4 +1,4 @@
-import AdminLayout from '../../layouts/AdminLayout';
+import AdminLayout from '../layouts/AdminLayout';
 import {
   Table,
   Tag,
@@ -47,41 +47,54 @@ export default function UserManagement() {
 
   const columns = [
     {
-      title: <span style={{ color: '#ccc' }}>User</span>,
+      title: 'User',
       dataIndex: 'name',
-      render: (_, record) => (
+      render: (text, record) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Avatar icon={<UserOutlined />} />
           <div>
-            <div style={{ fontWeight: 600, color: '#fff' }}>{record.name}</div>
-            <div style={{ fontSize: 13, color: '#999' }}>{record.email}</div>
+            <div style={{ fontWeight: 600, color: '#e0e0e0' }}>{record.name}</div>
+            <div style={{ fontSize: 13, color: '#aaa' }}>{record.email}</div>
           </div>
         </div>
       ),
     },
     {
-      title: <span style={{ color: '#ccc' }}>Mobile</span>,
+      title: 'Mobile',
       dataIndex: 'mobile',
-      render: (text) => <span style={{ color: '#fff' }}>{text}</span>,
+      render: (text) => <span style={{ color: '#ddd' }}>{text}</span>,
     },
     {
-      title: <span style={{ color: '#ccc' }}>Status</span>,
+      title: 'Status',
       dataIndex: 'status',
       render: (status) => (
         <Tag
-          color={status === 'Login' ? 'green' : 'red'}
-          style={{ borderRadius: 4, padding: '2px 8px', fontWeight: 500 }}
+          color={status === 'Login' ? 'success' : 'error'}
+          style={{
+            borderRadius: 4,
+            fontWeight: 'bold',
+            padding: '0 10px',
+            textTransform: 'uppercase',
+          }}
         >
           {status}
         </Tag>
       ),
     },
     {
-      title: <span style={{ color: '#ccc' }}>Aksi</span>,
+      title: 'Aksi',
       render: () => (
         <Space size="middle">
-          <Button shape="circle" icon={<EditOutlined />} />
-          <Button shape="circle" danger icon={<DeleteOutlined />} />
+          <Button
+            shape="circle"
+            icon={<EditOutlined />}
+            style={{ backgroundColor: '#1e1e1e', color: '#fff', border: '1px solid #444' }}
+          />
+          <Button
+            shape="circle"
+            icon={<DeleteOutlined />}
+            danger
+          />
         </Space>
       ),
     },
@@ -101,9 +114,11 @@ export default function UserManagement() {
 
         <Card
           style={{
-            backgroundColor: '#2c2c2e',
+            backgroundColor: '#2a2a2a',
             borderRadius: 12,
-            border: '1px solid #333',
+            border: '1px solid #444',
+            overflow: 'hidden',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.4)',
           }}
           bodyStyle={{ padding: 24 }}
         >
@@ -112,6 +127,7 @@ export default function UserManagement() {
               display: 'flex',
               flexWrap: 'wrap',
               justifyContent: 'space-between',
+              alignItems: 'center',
               marginBottom: 20,
               gap: 12,
             }}
@@ -120,9 +136,10 @@ export default function UserManagement() {
               type="primary"
               icon={<PlusOutlined />}
               style={{
-                backgroundColor: '#722ed1',
-                borderColor: '#722ed1',
+                backgroundColor: '#1677ff',
                 borderRadius: 6,
+                fontWeight: 'bold',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
               }}
             >
               Tambah Pengguna
@@ -139,7 +156,9 @@ export default function UserManagement() {
                 color: '#fff',
                 border: '1px solid #555',
                 borderRadius: 6,
+                paddingLeft: 10,
               }}
+              className="white-placeholder"
             />
           </div>
 
@@ -148,25 +167,55 @@ export default function UserManagement() {
             dataSource={filtered}
             pagination={{ pageSize: 5 }}
             bordered={false}
-            className="dark-table"
-            rowClassName={() => 'dark-row'}
+            style={{
+              backgroundColor: '#000',
+              color: '#fff',
+            }}
+            components={{
+              header: {
+                cell: (props) => (
+                  <th
+                    {...props}
+                    style={{
+                      ...props.style,
+                      backgroundColor: '#1a1a1a',
+                      color: '#fff',
+                      borderBottom: '1px solid #333',
+                      padding: '12px',
+                      fontSize: 14,
+                      textAlign: 'left',
+                    }}
+                  />
+                ),
+              },
+              body: {
+                cell: (props) => (
+                  <td
+                    {...props}
+                    style={{
+                      ...props.style,
+                      backgroundColor: '#111',
+                      color: '#fff',
+                      borderBottom: '1px solid #333',
+                      padding: '12px',
+                      fontSize: 14,
+                    }}
+                  />
+                ),
+              },
+            }}
           />
         </Card>
       </div>
 
-      <style>{`
-        .dark-table .ant-table-thead > tr > th {
-          background-color: #1e1e1e !important;
-          color: #ccc !important;
-        }
-        .dark-table .ant-table-tbody > tr > td {
-          background-color: #1a1a1a !important;
-          color: #fff !important;
-        }
-        .dark-row:hover > td {
-          background-color: #333 !important;
-        }
-      `}</style>
+      {/* Placeholder putih untuk input pencarian */}
+      <style>
+        {`
+          .white-placeholder input::placeholder {
+            color: #fff !important;
+          }
+        `}
+      </style>
     </AdminLayout>
   );
 }
