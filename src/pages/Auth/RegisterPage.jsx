@@ -1,16 +1,46 @@
-import { Form, Input, Button, Typography, Card } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, Typography, Card, message } from 'antd';
 import { LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import AuthLayout from '../../layouts/AuthLayout';
 
 const { Title } = Typography;
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { register } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const onFinish = (values) => {
-    // Simulasi register sukses
-    navigate('/login');
+  const onFinish = async (values) => {
+    // Validasi password
+    if (values.password !== values.confirmPassword) {
+      message.error('Password tidak cocok');
+      return;
+    }
+
+    if (values.password.length < 6) {
+      message.error('Password minimal 6 karakter');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const result = await register(values.username, values.email, values.password);
+      
+      if (result.success) {
+        message.success('Register berhasil! Silakan login.');
+        navigate('/login');
+      } else {
+        message.error(result.error || 'Register gagal');
+      }
+    } catch (error) {
+      console.error('Register error:', error);
+      message.error('Terjadi kesalahan saat register');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -22,15 +52,15 @@ export default function RegisterPage() {
             borderRadius: 14,
             border: 'none',
             color: '#fff',
-            width: 400,
+            width: 370,
             boxShadow: '0 2px 8px #0004',
           }}
           bodyStyle={{ padding: 36 }}
         >
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <Title level={3} style={{ color: '#4e8cff', marginBottom: 4, fontWeight: 700, letterSpacing: 1 }}>Daftar Akun</Title>
-            <div style={{ color: '#fff', fontSize: 15, marginBottom: 2 }}>Buat akun baru PlayGenix</div>
-            <div style={{ color: '#fff', fontSize: 13 }}>Isi data di bawah untuk mendaftar</div>
+            <Title level={3} style={{ color: '#4e8cff', marginBottom: 4, fontWeight: 700, letterSpacing: 1 }}>PlayGenix</Title>
+            <div style={{ color: '#fff', fontSize: 15, marginBottom: 2 }}>Daftar Akun</div>
+            <div style={{ color: '#fff', fontSize: 13 }}>Buat akun baru</div>
           </div>
 
           <Form
@@ -40,24 +70,6 @@ export default function RegisterPage() {
             requiredMark={false}
             autoComplete="off"
           >
-            <Form.Item
-              name="nama"
-              label={<span style={{ color: '#fff', fontWeight: 500 }}>Nama Lengkap</span>}
-              rules={[{ required: true, message: 'Masukkan nama lengkap!' }]}
-            >
-              <Input
-                prefix={<UserOutlined style={{ color: '#4e8cff' }} />}
-                placeholder="Nama Lengkap"
-                style={{
-                  background: '#232323',
-                  color: '#fff',
-                  border: '1px solid #444',
-                  borderRadius: 8,
-                  height: 44,
-                }}
-              />
-            </Form.Item>
-
             <Form.Item
               name="username"
               label={<span style={{ color: '#fff', fontWeight: 500 }}>Username</span>}
@@ -100,7 +112,10 @@ export default function RegisterPage() {
             <Form.Item
               name="password"
               label={<span style={{ color: '#fff', fontWeight: 500 }}>Password</span>}
-              rules={[{ required: true, message: 'Masukkan password!' }, { min: 6, message: 'Password minimal 6 karakter!' }]}
+              rules={[
+                { required: true, message: 'Masukkan password!' },
+                { min: 6, message: 'Password minimal 6 karakter!' }
+              ]}
             >
               <Input.Password
                 prefix={<LockOutlined style={{ color: '#4e8cff' }} />}
@@ -118,7 +133,6 @@ export default function RegisterPage() {
             <Form.Item
               name="confirmPassword"
               label={<span style={{ color: '#fff', fontWeight: 500 }}>Konfirmasi Password</span>}
-              dependencies={['password']}
               rules={[
                 { required: true, message: 'Konfirmasi password!' },
                 ({ getFieldValue }) => ({
@@ -148,6 +162,7 @@ export default function RegisterPage() {
               <Button
                 type="primary"
                 htmlType="submit"
+                loading={loading}
                 style={{
                   width: '100%',
                   height: 44,
@@ -160,14 +175,14 @@ export default function RegisterPage() {
                   letterSpacing: 1,
                 }}
               >
-                Daftar
+                {loading ? 'Loading...' : 'Daftar'}
               </Button>
             </Form.Item>
           </Form>
 
           <div style={{ textAlign: 'center', marginTop: 28 }}>
             <span style={{ color: '#fff', fontSize: 14 }}>Sudah punya akun?{' '}</span>
-            <a href="/login" style={{ color: '#4e8cff', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>Masuk sekarang</a>
+            <a href="/login" style={{ color: '#4e8cff', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>Login sekarang</a>
           </div>
         </Card>
         {/* Custom style for white placeholder and eye icon */}

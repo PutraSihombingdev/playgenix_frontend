@@ -1,7 +1,15 @@
-export default function AuthLayout({ children }) {
+import React from 'react';
+
+const AuthLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-[#1a1a1a] flex items-center justify-center">
+    <div style={{ 
+      minHeight: '100vh',
+      background: '#232323',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+    }}>
       {children}
     </div>
   );
-}
+};
+
+export default AuthLayout;

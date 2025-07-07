@@ -1,17 +1,35 @@
-import { Form, Input, Button, Typography, Card } from 'antd';
+import { Form, Input, Button, Typography, Card, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import AuthLayout from '../../layouts/AuthLayout';
+import React, { useState } from 'react';
 
 const { Title } = Typography;
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const onFinish = (values) => {
-    console.log('Login success:', values);
-    // Simulasi login sukses, lalu arahkan ke dashboard
-    navigate('/'); // ✅ Arahkan ke halaman dashboard
+  const onFinish = async (values) => {
+    setLoading(true);
+    
+    try {
+      const result = await login(values.username, values.password);
+      
+      if (result.success) {
+        message.success('Login berhasil!');
+        navigate('/'); // Arahkan ke halaman dashboard
+      } else {
+        message.error(result.error || 'Login gagal');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      message.error('Terjadi kesalahan saat login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -86,6 +104,7 @@ export default function LoginPage() {
               <Button
                 type="primary"
                 htmlType="submit"
+                loading={loading}
                 style={{
                   width: '100%',
                   height: 44,
@@ -98,7 +117,7 @@ export default function LoginPage() {
                   letterSpacing: 1,
                 }}
               >
-                Masuk
+                {loading ? 'Loading...' : 'Masuk'}
               </Button>
             </Form.Item>
           </Form>
