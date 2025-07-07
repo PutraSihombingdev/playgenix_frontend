@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Row, Col, Input, Tag } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Row, Col, Input, Tag, Modal } from 'antd';
 import {
   SearchOutlined,
   FilterOutlined,
@@ -9,57 +9,31 @@ import {
 import AdminLayout from '../../layouts/AdminLayout';
 import { getAllProducts, addProduct, updateProduct, deleteProduct } from "../../services/productService";
 import { useAuth } from '../../hooks/useAuth';
-
-const dummyData = [
-  {
-    id: 1,
-    name: 'Yuzika_1',
-    game: 'Mobile Legend',
-    price: 500000,
-    rank: 'Mythic 73',
-    skin: 215,
-    description: '2 skin Legend, 1 skin KOF, Ex Global 1 Ling, dll',
-    image: 'https://i.pinimg.com/736x/dd/10/46/dd1046e9294327e6c3baf663300afa0b.jpg'
-  },
-  {
-    id: 2,
-    name: 'C H E F I N',
-    game: 'Free Fire',
-    price: 100000,
-    rank: 'Grand Master',
-    skin: 230,
-    description: 'Sg Unggu, AK Draco Max 1, dll',
-    image: 'https://i.pinimg.com/736x/55/96/d8/5596d8307a14cee7b413e77fc5b7fc09.jpg'
-  },
-  {
-    id: 3,
-    name: 'ZynxHunter',
-    game: 'Valorant',
-    price: 350000,
-    rank: 'Immortal 1',
-    skin: 12,
-    description: 'Bundle Reaver, Prime Vandal, akun aktif',
-    image: 'https://i.pinimg.com/736x/1e/2d/54/1e2d548c8da2ffbc1fa17ed77c99d450.jpg'
-  },
-  {
-    id: 4,
-    name: 'SniperX',
-    game: 'PUBG',
-    price: 220000,
-    rank: 'Ace',
-    skin: 80,
-    description: 'Outfit lengkap, skin senjata M416 Glacier',
-    image: 'https://i.pinimg.com/736x/df/84/af/df84affdbd5952b3e7a85606c0caf0ff.jpg'
-  },
-];
+import { addToCart } from "../../services/cartService";
+import { useNavigate } from "react-router-dom";
 
 const StoreUser = () => {
   const { token } = useAuth();
-  const [accounts, setAccounts] = useState(dummyData);
+  const [accounts, setAccounts] = useState([]); // Sudah benar, pastikan tidak null/undefined
   const [searchTerm, setSearchTerm] = useState('');
   const [form, setForm] = useState({ name: '', price: '', description: '', image_url: '' });
+  const [showDetail, setShowDetail] = useState(false);
+  const [detailData, setDetailData] = useState(null);
 
-  const filteredAccounts = accounts.filter(
+  // Ambil data produk dari backend saat mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await getAllProducts();
+        setAccounts(Array.isArray(res) ? res : []);
+      } catch (err) {
+        setAccounts([]);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const filteredAccounts = (accounts || []).filter(
     acc => acc.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -83,6 +57,22 @@ const StoreUser = () => {
     } catch (err) {
       alert('Gagal menambah produk');
     }
+  };
+
+  const navigate = useNavigate();
+
+  const handleAddToCart = async (product) => {
+    try {
+      await addToCart({ product_id: product.id, quantity: 1 }, token);
+      navigate("/cart");
+    } catch (err) {
+      alert(err?.response?.data?.error || err?.response?.data?.message || err?.message || "Gagal menambah ke keranjang");
+    }
+  };
+
+  const handleShowDetail = (product) => {
+    setDetailData(product);
+    setShowDetail(true);
   };
 
   return (
@@ -110,78 +100,55 @@ const StoreUser = () => {
           <Tag icon={<FilterOutlined />} style={{ background: '#444', color: 'white', cursor: 'pointer' }}>Filter</Tag>
         </div>
 
-        <Row gutter={[12, 12]}>
-          {filteredAccounts.map(acc => (
-            <Col xs={24} sm={12} md={12} lg={12} key={acc.id}>
-              <div style={{
-                backgroundColor: '#2c2c2c',
-                borderRadius: '15px',
-                overflow: 'hidden',
-                color: 'white',
-                fontSize: '13px',
-                display: 'flex',
-                flexDirection: 'column',
-                position: 'relative'
-              }}>
-                {/* Game Tag */}
-                <div style={{
-                  position: 'absolute',
-                  top: '8px',
-                  left: '12px',
-                  backgroundColor: 'rgba(0,0,0,0.6)',
-                  padding: '2px 8px',
-                  borderRadius: '6px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  zIndex: 1
-                }}>
-                  {acc.game}
-                </div>
 
-                {/* Game Image */}
+        <Row gutter={[12, 12]} style={{ marginTop: 20 }}>
+          {filteredAccounts.map(product => (
+            <Col xs={24} sm={12} md={8} key={product.id}>
+              <div style={{ background: '#2c2c2c', borderRadius: 10, padding: 16 }}>
                 <img
-                  src={acc.image}
-                  alt={acc.name}
-                  style={{
-                    width: '100%',
-                    height: '160px',
-                    objectFit: 'cover'
-                  }}
+                  src={product.image_url}
+                  alt={product.name}
+                  style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8 }}
                 />
-
-                {/* Account Info */}
-                <div style={{ padding: '10px 14px' }}>
-                  <p style={{
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    marginBottom: '8px',
-                    color: '#fff'
-                  }}>
-                    {acc.game}
-                  </p>
-                  <p><strong>Rank :</strong> {acc.rank}</p>
-                  <p><strong>Skin :</strong> {acc.skin}</p>
-                  <p><strong>Harga :</strong> Rp{acc.price.toLocaleString()}</p>
-                  <p><strong>Keterangan :</strong> {acc.description}</p>
-
-                  {/* Actions */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                    <Button icon={<ShoppingCartOutlined />} size="small" style={{ backgroundColor: '#333', color: 'white', border: 'none' }}>Tambahkan ke Keranjang</Button>
-                    <Button icon={<EyeOutlined />} size="small" style={{ backgroundColor: '#eee', color: '#232323', border: 'none' }}>Detail Akun</Button>
-                  </div>
+                <h3>{product.name}</h3>
+                <p>Harga: Rp{Number(product.price).toLocaleString()}</p>
+                <p>{product.description}</p>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <Button
+                    icon={<ShoppingCartOutlined />}
+                    style={{ backgroundColor: '#333', color: 'white', border: 'none' }}
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Tambahkan ke Keranjang
+                  </Button>
+                  <Button
+                    icon={<EyeOutlined />}
+                    style={{ backgroundColor: '#eee', color: '#232323', border: 'none' }}
+                    onClick={() => handleShowDetail(product)}
+                  >
+                    Detail
+                  </Button>
                 </div>
               </div>
             </Col>
           ))}
         </Row>
 
-        <form onSubmit={handleSubmit}>
-          <input name="name" value={form.name} onChange={handleChange} placeholder="Nama Produk" required />
-          <input name="price" value={form.price} onChange={handleChange} placeholder="Harga" required />
-          <input name="description" value={form.description} onChange={handleChange} placeholder="Deskripsi" />
-          <input name="image_url" value={form.image_url} onChange={handleChange} placeholder="URL Gambar" />
-          <button type="submit">Store</button>
-        </form>
+        <Modal
+          open={showDetail}
+          onCancel={() => setShowDetail(false)}
+          footer={null}
+          title="Detail Produk"
+        >
+          {detailData && (
+            <div>
+              <img src={detailData.image_url} alt={detailData.name} style={{ width: '100%', maxHeight: 200, objectFit: 'cover', marginBottom: 16 }} />
+              <p><strong>Nama:</strong> {detailData.name}</p>
+              <p><strong>Harga:</strong> Rp{Number(detailData.price).toLocaleString()}</p>
+              <p><strong>Deskripsi:</strong> {detailData.description}</p>
+            </div>
+          )}
+        </Modal>
       </div>
     </AdminLayout>
   );

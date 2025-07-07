@@ -1,18 +1,19 @@
 import api from './api';
+import qs from 'qs';
 
-export const register = async (data) => {
-  // data: { username, email, password }
-  const formData = new FormData();
-  formData.append('username', data.username);
-  formData.append('email', data.email);
-  formData.append('password', data.password);
-  return api.post('/auth/register', formData);
+export const register = async (username, email, password) => {
+  return api.post(
+    '/auth/register',
+    qs.stringify({ username, email, password }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
 };
 
-export const login = async (data) => {
-  // data: { username, password }
-  const formData = new FormData();
-  formData.append('username', data.username);
-  formData.append('password', data.password);
-  return api.post('/auth/login', formData);
-}; 
+export const login = async (email, password) => {
+  const res = await api.post(
+    '/auth/login',
+    qs.stringify({ email, password }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
+  return res.data;
+};

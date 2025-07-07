@@ -1,216 +1,174 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Row, Col, Input, Tag, Form, InputNumber, message } from 'antd';
-import {
-  PlusOutlined,
-  SearchOutlined,
-  FilterOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  EyeOutlined
-} from '@ant-design/icons';
+import { Button, Row, Col, Input, Modal, Form, InputNumber, message } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import AdminLayout from '../../layouts/AdminLayout';
-import {
-  getAllProducts,
-  addProduct,
-  updateProduct,
-  deleteProduct
-} from "../../services/productService";
+import { getAllProducts, addProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { useAuth } from '../../hooks/useAuth';
 
 const Store = () => {
-  const [accounts, setAccounts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProducts] = useState([]);
+  const [showAdd, setShowAdd] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [editData, setEditData] = useState({});
+  const [showDetail, setShowDetail] = useState(false);
+  const [detailData, setDetailData] = useState(null);
+  const { token } = useAuth();
 
+  // Ambil data produk
   const fetchProducts = async () => {
-    setLoading(true);
     try {
       const res = await getAllProducts();
-      setAccounts(res.data); // Pastikan backend mengembalikan array produk
+      setProducts(Array.isArray(res) ? res : []);
     } catch (err) {
-      // handle error, misal tampilkan pesan
+      setProducts([]);
+      message.error('Gagal mengambil produk');
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const filteredAccounts = accounts.filter(
-    acc => acc.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const [showAdd, setShowAdd] = useState(false);
-  const { token } = useAuth();
-  const [addLoading, setAddLoading] = useState(false);
-
-  const onFinish = async (values) => {
-    setAddLoading(true);
+  // Tambah produk
+  const handleAdd = async (values) => {
     try {
-      const formData = new FormData();
-      formData.append('name', values.name);
-      formData.append('price', values.price);
-      formData.append('description', values.description || '');
-      formData.append('image', values.image || '');
-
-      await addProduct(formData, token);
+      await addProduct(values, token);
       message.success('Produk berhasil ditambahkan!');
       setShowAdd(false);
       fetchProducts();
     } catch (err) {
-      message.error('Gagal menambah produk');
+      message.error(err?.response?.data?.error || 'Gagal menambah produk');
     }
-    setAddLoading(false);
   };
 
-  const [editProduct, setEditProduct] = useState(null);
-  const [editData, setEditData] = useState({});
+  // Edit produk
+  const handleEdit = async (values) => {
+    try {
+      await updateProduct(editData.id, values, token);
+      message.success('Produk berhasil diupdate!');
+      setShowEdit(false);
+      fetchProducts();
+    } catch (err) {
+      message.error(err?.response?.data?.error || 'Gagal update produk');
+    }
+  };
+
+  // Hapus produk dengan modal custom
+  const [deleteId, setDeleteId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteProduct(deleteId, token);
+      message.success('Produk berhasil dihapus');
+      setShowDeleteModal(false);
+      setDeleteId(null);
+      fetchProducts();
+    } catch (err) {
+      message.error(err);
+      setShowDeleteModal(false);
+      setDeleteId(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
 
   return (
     <AdminLayout>
       <div style={{ color: 'white', padding: '10px' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '12px' }}>Product</h2>
-
-        <div style={{ maxWidth: '300px', marginBottom: '12px' }}>
-          <Input
-            placeholder="Search"
-            prefix={<SearchOutlined style={{ color: '#fff' }} />}
-            onChange={e => setSearchTerm(e.target.value)}
-            style={{
-              backgroundColor: '#2a2a2a',
-              border: '1px solid #444',
-              color: 'white'
-            }}
-          />
-        </div>
-
-        <div style={{ marginBottom: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <Tag color="#a855f7" style={{ cursor: 'pointer', padding: '3px 12px' }}>Top</Tag>
-          <Tag style={{ background: '#333', color: 'white', cursor: 'pointer' }}>Popular</Tag>
-          <Tag style={{ background: '#333', color: 'white', cursor: 'pointer' }}>Recommended</Tag>
-          <Tag icon={<FilterOutlined />} style={{ background: '#444', color: 'white', cursor: 'pointer' }}>Filter</Tag>
-        </div>
-
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          style={{
-            marginBottom: '20px',
-            backgroundColor: '#a855f7',
-            borderColor: '#a855f7',
-            padding: '0 20px'
-          }}
-          onClick={() => setShowAdd(true)}
-        >
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => setShowAdd(true)}>
           Tambah Produk
         </Button>
-
-        {showAdd && (
-          <Form
-            layout="vertical"
-            onFinish={onFinish}
-            style={{ maxWidth: 600, background: '#222', padding: 24, borderRadius: 8 }}
-          >
-            <Form.Item
-              label="Nama Produk"
-              name="name"
-              rules={[{ required: true, message: 'Nama wajib diisi' }]}
-            >
-              <Input placeholder="Nama Produk" />
-            </Form.Item>
-            <Form.Item
-              label="Harga"
-              name="price"
-              rules={[{ required: true, message: 'Harga wajib diisi' }]}
-            >
-              <InputNumber min={0} style={{ width: '100%' }} placeholder="Harga" />
-            </Form.Item>
-            <Form.Item label="Deskripsi" name="description">
-              <Input.TextArea rows={3} placeholder="Deskripsi" />
-            </Form.Item>
-            <Form.Item label="URL Gambar" name="image">
-              <Input placeholder="https://..." />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={addLoading}>Simpan</Button>
-              <Button style={{ marginLeft: 8 }} htmlType="button" onClick={() => setShowAdd(false)} disabled={addLoading}>Batal</Button>
-            </Form.Item>
-          </Form>
-        )}
-
-        <Row gutter={[12, 12]}>
-          {filteredAccounts.map(acc => (
-            <Col xs={24} sm={12} md={12} lg={12} key={acc.id}>
-              <div style={{
-                backgroundColor: '#2c2c2c',
-                borderRadius: '15px',
-                overflow: 'hidden',
-                color: 'white',
-                fontSize: '13px',
-                display: 'flex',
-                flexDirection: 'column',
-                position: 'relative'
-              }}>
-                {/* Product Image */}
+        <Row gutter={[12, 12]} style={{ marginTop: 20 }}>
+          {products.map(product => (
+            <Col xs={24} sm={12} md={8} key={product.id}>
+              <div style={{ background: '#2c2c2c', borderRadius: 10, padding: 16 }}>
                 <img
-                  src={
-                    acc.image && acc.image.startsWith('http')
-                      ? acc.image
-                      : 'https://via.placeholder.com/400x160?text=No+Image'
-                  }
-                  alt={acc.name}
-                  style={{
-                    width: '100%',
-                    height: '160px',
-                    objectFit: 'cover'
-                  }}
+                  src={product.image_url}
+                  alt={product.name}
+                  style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8 }}
                 />
-
-                {/* Product Info */}
-                <div style={{ padding: '10px 14px' }}>
-                  <p style={{
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    marginBottom: '8px',
-                    color: '#fff'
-                  }}>
-                    {acc.name}
-                  </p>
-                  <p><strong>Harga :</strong> Rp{Number(acc.price).toLocaleString()}</p>
-                  <p><strong>Deskripsi :</strong> {acc.description}</p>
-
-                  {/* Actions */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                    <Button
-                      icon={<EditOutlined />}
-                      size="small"
-                      style={{ backgroundColor: '#333', color: 'white', border: 'none' }}
-                      onClick={() => {
-                        setEditProduct(acc.id);
-                        setEditData(acc);
-                      }}
-                    >
-                      Edit Produk
-                    </Button>
-                    <Button icon={<EyeOutlined />} size="small" style={{ backgroundColor: '#333', color: 'white', border: 'none' }}>Lihat Detail</Button>
-                    <Button
-                      icon={<DeleteOutlined />}
-                      size="small"
-                      danger
-                      onClick={async () => {
-                        await deleteProduct(acc.id);
-                        fetchProducts();
-                      }}
-                    >
-                      Hapus Produk
-                    </Button>
-                  </div>
+                <h3>{product.name}</h3>
+                <p>Harga: Rp{Number(product.price).toLocaleString()}</p>
+                <p>{product.description}</p>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <Button icon={<EyeOutlined />} onClick={() => { setShowDetail(true); setDetailData(product); }}>Detail</Button>
+                  <Button icon={<EditOutlined />} onClick={() => { setShowEdit(true); setEditData(product); }}>Edit</Button>
+                  <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(product.id)}>
+                    Hapus
+                  </Button>
                 </div>
               </div>
             </Col>
           ))}
         </Row>
+
+        {/* Modal Tambah Produk */}
+        <Modal open={showAdd} onCancel={() => setShowAdd(false)} footer={null} title="Tambah Produk">
+          <Form layout="vertical" onFinish={handleAdd}>
+            <Form.Item label="Nama Produk" name="name" rules={[{ required: true, message: 'Nama wajib diisi' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Harga" name="price" rules={[{ required: true, message: 'Harga wajib diisi' }]}>
+              <InputNumber min={0} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item label="Deskripsi" name="description">
+              <Input.TextArea rows={3} />
+            </Form.Item>
+            <Form.Item label="URL Gambar" name="image_url">
+              <Input />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">Simpan</Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        {/* Modal Edit Produk */}
+        <Modal open={showEdit} onCancel={() => setShowEdit(false)} footer={null} title="Edit Produk">
+          <Form layout="vertical" initialValues={editData} onFinish={handleEdit}>
+            <Form.Item label="Nama Produk" name="name" rules={[{ required: true, message: 'Nama wajib diisi' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Harga" name="price" rules={[{ required: true, message: 'Harga wajib diisi' }]}>
+              <InputNumber min={0} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item label="Deskripsi" name="description">
+              <Input.TextArea rows={3} />
+            </Form.Item>
+            <Form.Item label="URL Gambar" name="image_url">
+              <Input />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">Simpan Perubahan</Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        {/* Modal Detail Produk */}
+        <Modal open={showDetail} onCancel={() => setShowDetail(false)} footer={null} title="Detail Produk">
+          {detailData && (
+            <div>
+              <img src={detailData.image_url} alt={detailData.name} style={{ width: '100%', maxHeight: 200, objectFit: 'cover', marginBottom: 16 }} />
+              <p><strong>Nama:</strong> {detailData.name}</p>
+              <p><strong>Harga:</strong> Rp{Number(detailData.price).toLocaleString()}</p>
+              <p><strong>Deskripsi:</strong> {detailData.description}</p>
+            </div>
+          )}
+        </Modal>
+
+        {/* Modal Konfirmasi Hapus Produk */}
+        <Modal open={showDeleteModal} onCancel={cancelDelete} onOk={confirmDelete} okText="Hapus" okType="danger" cancelText="Batal" title="Konfirmasi Hapus Produk">
+          <p>Yakin ingin menghapus produk ini?</p>
+        </Modal>
       </div>
     </AdminLayout>
   );

@@ -1,42 +1,35 @@
-import React, { useState } from "react";
-import { login } from "../../services/authService";
+import React, { useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext.jsx';
+import { login as loginApi } from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
     try {
-      const res = await login(form);
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
-      }
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      window.location.href = "/";
+      const data = await loginApi(email, password);
+      login(data.token, data.user); // simpan token & user ke context
+      navigate('/'); // redirect ke dashboard
     } catch (err) {
-      setError("Login gagal: " + (err.response?.data?.message || err.message));
+      const msg = err?.response?.data?.error || err?.message || 'Login gagal';
+      setError(msg);
     }
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '40px auto', background: '#232323', padding: 24, borderRadius: 10, color: '#fff' }}>
-      <form onSubmit={handleSubmit}>
-        <input name="username" value={form.username} onChange={handleChange} placeholder="Username" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #444', background: '#2c2c2c', color: '#fff', marginBottom: 12 }} />
-        <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #444', background: '#2c2c2c', color: '#fff', marginBottom: 12 }} />
-        <button type="submit" style={{ width: '100%', padding: 10, borderRadius: 6, background: '#4e8cff', color: '#fff', border: 'none', fontWeight: 600 }}>Login</button>
-        {error && <div style={{color: "red", marginTop: 10}}>{error}</div>}
-      </form>
-      <div style={{ textAlign: 'center', marginTop: 18 }}>
-        <span style={{ color: '#fff', fontSize: 14 }}>Belum punya akun?{' '}</span>
-        <a href="/register" style={{ color: '#4e8cff', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>Daftar sekarang</a>
-      </div>
-    </div>
+    <form onSubmit={handleLogin}>
+      <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
+      <input value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="Password" />
+      <button type="submit">Login</button>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+    </form>
   );
 };
 
