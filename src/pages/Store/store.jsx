@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Row, Col, Input, Tag } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Row, Col, Input, Tag, Form, InputNumber, message } from 'antd';
 import {
   PlusOutlined,
   SearchOutlined,
@@ -9,57 +9,63 @@ import {
   EyeOutlined
 } from '@ant-design/icons';
 import AdminLayout from '../../layouts/AdminLayout';
-
-const dummyData = [
-  {
-    id: 1,
-    name: 'Yuzika_1',
-    game: 'Mobile Legend',
-    price: 500000,
-    rank: 'Mythic 73',
-    skin: 215,
-    description: '2 skin Legend, 1 skin KOF, Ex Global 1 Ling, dll',
-    image: 'https://i.pinimg.com/736x/dd/10/46/dd1046e9294327e6c3baf663300afa0b.jpg'
-  },
-  {
-    id: 2,
-    name: 'C H E F I N',
-    game: 'Free Fire',
-    price: 100000,
-    rank: 'Grand Master',
-    skin: 230,
-    description: 'Sg Unggu, AK Draco Max 1, dll',
-    image: 'https://i.pinimg.com/736x/55/96/d8/5596d8307a14cee7b413e77fc5b7fc09.jpg'
-  },
-  {
-    id: 3,
-    name: 'ZynxHunter',
-    game: 'Valorant',
-    price: 350000,
-    rank: 'Immortal 1',
-    skin: 12,
-    description: 'Bundle Reaver, Prime Vandal, akun aktif',
-    image: 'https://i.pinimg.com/736x/1e/2d/54/1e2d548c8da2ffbc1fa17ed77c99d450.jpg'
-  },
-  {
-    id: 4,
-    name: 'SniperX',
-    game: 'PUBG',
-    price: 220000,
-    rank: 'Ace',
-    skin: 80,
-    description: 'Outfit lengkap, skin senjata M416 Glacier',
-    image: 'https://i.pinimg.com/736x/df/84/af/df84affdbd5952b3e7a85606c0caf0ff.jpg'
-  },
-];
+import {
+  getAllProducts,
+  addProduct,
+  updateProduct,
+  deleteProduct
+} from "../../services/productService";
+import { useAuth } from '../../hooks/useAuth';
 
 const Store = () => {
-  const [accounts, setAccounts] = useState(dummyData);
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const res = await getAllProducts();
+      setAccounts(res.data); // Pastikan backend mengembalikan array produk
+    } catch (err) {
+      // handle error, misal tampilkan pesan
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const filteredAccounts = accounts.filter(
     acc => acc.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const [showAdd, setShowAdd] = useState(false);
+  const { token } = useAuth();
+  const [addLoading, setAddLoading] = useState(false);
+
+  const onFinish = async (values) => {
+    setAddLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('name', values.name);
+      formData.append('price', values.price);
+      formData.append('description', values.description || '');
+      formData.append('image', values.image || '');
+
+      await addProduct(formData, token);
+      message.success('Produk berhasil ditambahkan!');
+      setShowAdd(false);
+      fetchProducts();
+    } catch (err) {
+      message.error('Gagal menambah produk');
+    }
+    setAddLoading(false);
+  };
+
+  const [editProduct, setEditProduct] = useState(null);
+  const [editData, setEditData] = useState({});
 
   return (
     <AdminLayout>
@@ -95,9 +101,43 @@ const Store = () => {
             borderColor: '#a855f7',
             padding: '0 20px'
           }}
+          onClick={() => setShowAdd(true)}
         >
-          Tambah Akun
+          Tambah Produk
         </Button>
+
+        {showAdd && (
+          <Form
+            layout="vertical"
+            onFinish={onFinish}
+            style={{ maxWidth: 600, background: '#222', padding: 24, borderRadius: 8 }}
+          >
+            <Form.Item
+              label="Nama Produk"
+              name="name"
+              rules={[{ required: true, message: 'Nama wajib diisi' }]}
+            >
+              <Input placeholder="Nama Produk" />
+            </Form.Item>
+            <Form.Item
+              label="Harga"
+              name="price"
+              rules={[{ required: true, message: 'Harga wajib diisi' }]}
+            >
+              <InputNumber min={0} style={{ width: '100%' }} placeholder="Harga" />
+            </Form.Item>
+            <Form.Item label="Deskripsi" name="description">
+              <Input.TextArea rows={3} placeholder="Deskripsi" />
+            </Form.Item>
+            <Form.Item label="URL Gambar" name="image">
+              <Input placeholder="https://..." />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={addLoading}>Simpan</Button>
+              <Button style={{ marginLeft: 8 }} htmlType="button" onClick={() => setShowAdd(false)} disabled={addLoading}>Batal</Button>
+            </Form.Item>
+          </Form>
+        )}
 
         <Row gutter={[12, 12]}>
           {filteredAccounts.map(acc => (
@@ -112,24 +152,13 @@ const Store = () => {
                 flexDirection: 'column',
                 position: 'relative'
               }}>
-                {/* Game Tag */}
-                <div style={{
-                  position: 'absolute',
-                  top: '8px',
-                  left: '12px',
-                  backgroundColor: 'rgba(0,0,0,0.6)',
-                  padding: '2px 8px',
-                  borderRadius: '6px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  zIndex: 1
-                }}>
-                  {acc.game}
-                </div>
-
-                {/* Game Image */}
+                {/* Product Image */}
                 <img
-                  src={acc.image}
+                  src={
+                    acc.image && acc.image.startsWith('http')
+                      ? acc.image
+                      : 'https://via.placeholder.com/400x160?text=No+Image'
+                  }
                   alt={acc.name}
                   style={{
                     width: '100%',
@@ -138,27 +167,44 @@ const Store = () => {
                   }}
                 />
 
-                {/* Account Info */}
+                {/* Product Info */}
                 <div style={{ padding: '10px 14px' }}>
-                  {/* GANTI JUDUL DENGAN GAME */}
                   <p style={{
                     fontWeight: 'bold',
                     fontSize: '14px',
                     marginBottom: '8px',
                     color: '#fff'
                   }}>
-                    {acc.game}
+                    {acc.name}
                   </p>
-                  <p><strong>Rank :</strong> {acc.rank}</p>
-                  <p><strong>Skin :</strong> {acc.skin}</p>
-                  <p><strong>Harga :</strong> Rp{acc.price.toLocaleString()}</p>
-                  <p><strong>Keterangan :</strong> {acc.description}</p>
+                  <p><strong>Harga :</strong> Rp{Number(acc.price).toLocaleString()}</p>
+                  <p><strong>Deskripsi :</strong> {acc.description}</p>
 
                   {/* Actions */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                    <Button icon={<EditOutlined />} size="small" style={{ backgroundColor: '#333', color: 'white', border: 'none' }}>Edit Akun</Button>
+                    <Button
+                      icon={<EditOutlined />}
+                      size="small"
+                      style={{ backgroundColor: '#333', color: 'white', border: 'none' }}
+                      onClick={() => {
+                        setEditProduct(acc.id);
+                        setEditData(acc);
+                      }}
+                    >
+                      Edit Produk
+                    </Button>
                     <Button icon={<EyeOutlined />} size="small" style={{ backgroundColor: '#333', color: 'white', border: 'none' }}>Lihat Detail</Button>
-                    <Button icon={<DeleteOutlined />} size="small" danger>Hapus Akun</Button>
+                    <Button
+                      icon={<DeleteOutlined />}
+                      size="small"
+                      danger
+                      onClick={async () => {
+                        await deleteProduct(acc.id);
+                        fetchProducts();
+                      }}
+                    >
+                      Hapus Produk
+                    </Button>
                   </div>
                 </div>
               </div>

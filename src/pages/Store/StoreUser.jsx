@@ -7,6 +7,8 @@ import {
   ShoppingCartOutlined
 } from '@ant-design/icons';
 import AdminLayout from '../../layouts/AdminLayout';
+import { getAllProducts, addProduct, updateProduct, deleteProduct } from "../../services/productService";
+import { useAuth } from '../../hooks/useAuth';
 
 const dummyData = [
   {
@@ -52,12 +54,36 @@ const dummyData = [
 ];
 
 const StoreUser = () => {
+  const { token } = useAuth();
   const [accounts, setAccounts] = useState(dummyData);
   const [searchTerm, setSearchTerm] = useState('');
+  const [form, setForm] = useState({ name: '', price: '', description: '', image_url: '' });
 
   const filteredAccounts = accounts.filter(
     acc => acc.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    try {
+      // Jika ada upload file, gunakan FormData
+      const formData = new FormData();
+      formData.append('name', form.name);
+      formData.append('price', form.price);
+      formData.append('description', form.description);
+      formData.append('image_url', form.image_url); // atau formData.append('image', file);
+
+      await addProduct(formData, token);
+      alert('Produk berhasil ditambahkan!');
+      // Reset form atau refresh data
+    } catch (err) {
+      alert('Gagal menambah produk');
+    }
+  };
 
   return (
     <AdminLayout>
@@ -148,6 +174,14 @@ const StoreUser = () => {
             </Col>
           ))}
         </Row>
+
+        <form onSubmit={handleSubmit}>
+          <input name="name" value={form.name} onChange={handleChange} placeholder="Nama Produk" required />
+          <input name="price" value={form.price} onChange={handleChange} placeholder="Harga" required />
+          <input name="description" value={form.description} onChange={handleChange} placeholder="Deskripsi" />
+          <input name="image_url" value={form.image_url} onChange={handleChange} placeholder="URL Gambar" />
+          <button type="submit">Store</button>
+        </form>
       </div>
     </AdminLayout>
   );

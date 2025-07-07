@@ -1,204 +1,48 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Typography, Card, message } from 'antd';
-import { LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import AuthLayout from '../../layouts/AuthLayout';
+import React, { useState } from "react";
+import { register } from '../../services/authService';
 
-const { Title } = Typography;
+const RegisterPage = () => {
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-export default function RegisterPage() {
-  const navigate = useNavigate();
-  const { register } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const onFinish = async (values) => {
-    // Validasi password
-    if (values.password !== values.confirmPassword) {
-      message.error('Password tidak cocok');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!form.username || !form.email || !form.password) {
+      setError("Semua field wajib diisi");
       return;
     }
-
-    if (values.password.length < 6) {
-      message.error('Password minimal 6 karakter');
-      return;
-    }
-
-    setLoading(true);
-    
     try {
-      const result = await register(values.username, values.email, values.password);
-      
-      if (result.success) {
-        message.success('Register berhasil! Silakan login.');
-        navigate('/login');
-      } else {
-        message.error(result.error || 'Register gagal');
-      }
-    } catch (error) {
-      console.error('Register error:', error);
-      message.error('Terjadi kesalahan saat register');
-    } finally {
-      setLoading(false);
+      await register(form);
+      setSuccess("Registrasi berhasil! Silakan login.");
+    } catch (err) {
+      setError("Registrasi gagal: " + (err.response?.data?.message || err.message));
     }
   };
 
   return (
-    <AuthLayout>
-      <div style={{ minHeight: '100vh', background: '#232323', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-        <Card
-          style={{
-            background: '#2c2c2c',
-            borderRadius: 14,
-            border: 'none',
-            color: '#fff',
-            width: 370,
-            boxShadow: '0 2px 8px #0004',
-          }}
-          bodyStyle={{ padding: 36 }}
-        >
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <Title level={3} style={{ color: '#4e8cff', marginBottom: 4, fontWeight: 700, letterSpacing: 1 }}>PlayGenix</Title>
-            <div style={{ color: '#fff', fontSize: 15, marginBottom: 2 }}>Daftar Akun</div>
-            <div style={{ color: '#fff', fontSize: 13 }}>Buat akun baru</div>
-          </div>
-
-          <Form
-            name="register-form"
-            layout="vertical"
-            onFinish={onFinish}
-            requiredMark={false}
-            autoComplete="off"
-          >
-            <Form.Item
-              name="username"
-              label={<span style={{ color: '#fff', fontWeight: 500 }}>Username</span>}
-              rules={[{ required: true, message: 'Masukkan username!' }]}
-            >
-              <Input
-                prefix={<UserOutlined style={{ color: '#4e8cff' }} />}
-                placeholder="Username"
-                style={{
-                  background: '#232323',
-                  color: '#fff',
-                  border: '1px solid #444',
-                  borderRadius: 8,
-                  height: 44,
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="email"
-              label={<span style={{ color: '#fff', fontWeight: 500 }}>Email</span>}
-              rules={[
-                { required: true, message: 'Masukkan email!' },
-                { type: 'email', message: 'Format email tidak valid!' }
-              ]}
-            >
-              <Input
-                prefix={<MailOutlined style={{ color: '#4e8cff' }} />}
-                placeholder="Email"
-                style={{
-                  background: '#232323',
-                  color: '#fff',
-                  border: '1px solid #444',
-                  borderRadius: 8,
-                  height: 44,
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="password"
-              label={<span style={{ color: '#fff', fontWeight: 500 }}>Password</span>}
-              rules={[
-                { required: true, message: 'Masukkan password!' },
-                { min: 6, message: 'Password minimal 6 karakter!' }
-              ]}
-            >
-              <Input.Password
-                prefix={<LockOutlined style={{ color: '#4e8cff' }} />}
-                placeholder="Password"
-                style={{
-                  background: '#232323',
-                  color: '#fff',
-                  border: '1px solid #444',
-                  borderRadius: 8,
-                  height: 44,
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="confirmPassword"
-              label={<span style={{ color: '#fff', fontWeight: 500 }}>Konfirmasi Password</span>}
-              rules={[
-                { required: true, message: 'Konfirmasi password!' },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Password tidak cocok!'));
-                  },
-                }),
-              ]}
-            >
-              <Input.Password
-                prefix={<LockOutlined style={{ color: '#4e8cff' }} />}
-                placeholder="Konfirmasi Password"
-                style={{
-                  background: '#232323',
-                  color: '#fff',
-                  border: '1px solid #444',
-                  borderRadius: 8,
-                  height: 44,
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item style={{ marginBottom: 0 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                style={{
-                  width: '100%',
-                  height: 44,
-                  background: '#4e8cff',
-                  border: 'none',
-                  borderRadius: 8,
-                  color: '#fff',
-                  fontWeight: 600,
-                  fontSize: 16,
-                  letterSpacing: 1,
-                }}
-              >
-                {loading ? 'Loading...' : 'Daftar'}
-              </Button>
-            </Form.Item>
-          </Form>
-
-          <div style={{ textAlign: 'center', marginTop: 28 }}>
-            <span style={{ color: '#fff', fontSize: 14 }}>Sudah punya akun?{' '}</span>
-            <a href="/login" style={{ color: '#4e8cff', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>Login sekarang</a>
-          </div>
-        </Card>
-        {/* Custom style for white placeholder and eye icon */}
-        <style>{`
-          input::placeholder, .ant-input::placeholder, .ant-input-password input::placeholder {
-            color: #fff !important;
-            opacity: 1 !important;
-          }
-          .ant-input-password-icon {
-            color: #fff !important;
-          }
-          .ant-input-password-icon:hover, .ant-input-password-icon:focus {
-            color: #fff !important;
-          }
-        `}</style>
+    <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: '40px auto', background: '#232323', padding: 24, borderRadius: 10, color: '#fff' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: 20 }}>Daftar Akun</h2>
+      <div style={{ marginBottom: 12 }}>
+        <input name="username" value={form.username} onChange={handleChange} placeholder="Username" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #444', background: '#2c2c2c', color: '#fff' }} />
       </div>
-    </AuthLayout>
+      <div style={{ marginBottom: 12 }}>
+        <input name="email" value={form.email} onChange={handleChange} placeholder="Email" type="email" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #444', background: '#2c2c2c', color: '#fff' }} />
+      </div>
+      <div style={{ marginBottom: 12 }}>
+        <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #444', background: '#2c2c2c', color: '#fff' }} />
+      </div>
+      <button type="submit" style={{ width: '100%', padding: 10, borderRadius: 6, background: '#4e8cff', color: '#fff', border: 'none', fontWeight: 600 }}>Register</button>
+      {error && <div style={{color: "red", marginTop: 10}}>{error}</div>}
+      {success && <div style={{color: "green", marginTop: 10}}>{success}</div>}
+    </form>
   );
-}
+};
+
+export default RegisterPage;

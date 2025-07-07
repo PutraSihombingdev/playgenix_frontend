@@ -1,146 +1,43 @@
-import { Form, Input, Button, Typography, Card, message } from 'antd';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import AuthLayout from '../../layouts/AuthLayout';
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { login } from "../../services/authService";
 
-const { Title } = Typography;
+const LoginPage = () => {
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
 
-export default function LoginPage() {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const onFinish = async (values) => {
-    setLoading(true);
-    
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
     try {
-      const result = await login(values.username, values.password);
-      
-      if (result.success) {
-        message.success('Login berhasil!');
-        navigate('/'); // Arahkan ke halaman dashboard
-      } else {
-        message.error(result.error || 'Login gagal');
+      const res = await login(form);
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      message.error('Terjadi kesalahan saat login');
-    } finally {
-      setLoading(false);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      window.location.href = "/";
+    } catch (err) {
+      setError("Login gagal: " + (err.response?.data?.message || err.message));
     }
   };
 
   return (
-    <AuthLayout>
-      <div style={{ minHeight: '100vh', background: '#232323', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-        <Card
-          style={{
-            background: '#2c2c2c',
-            borderRadius: 14,
-            border: 'none',
-            color: '#fff',
-            width: 370,
-            boxShadow: '0 2px 8px #0004',
-          }}
-          bodyStyle={{ padding: 36 }}
-        >
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <Title level={3} style={{ color: '#4e8cff', marginBottom: 4, fontWeight: 700, letterSpacing: 1 }}>PlayGenix</Title>
-            <div style={{ color: '#fff', fontSize: 15, marginBottom: 2 }}>Login Akun</div>
-            <div style={{ color: '#fff', fontSize: 13 }}>Masuk untuk melanjutkan</div>
-          </div>
-
-          <Form
-            name="login-form"
-            layout="vertical"
-            onFinish={onFinish}
-            requiredMark={false}
-            autoComplete="off"
-          >
-            <Form.Item
-              name="username"
-              label={<span style={{ color: '#fff', fontWeight: 500 }}>Username</span>}
-              rules={[{ required: true, message: 'Masukkan username!' }]}
-            >
-              <Input
-                prefix={<UserOutlined style={{ color: '#4e8cff' }} />}
-                placeholder="Username"
-                style={{
-                  background: '#232323',
-                  color: '#fff',
-                  border: '1px solid #444',
-                  borderRadius: 8,
-                  height: 44,
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="password"
-              label={<span style={{ color: '#fff', fontWeight: 500 }}>Password</span>}
-              rules={[{ required: true, message: 'Masukkan password!' }]}
-            >
-              <Input.Password
-                prefix={<LockOutlined style={{ color: '#4e8cff' }} />}
-                placeholder="Password"
-                style={{
-                  background: '#232323',
-                  color: '#fff',
-                  border: '1px solid #444',
-                  borderRadius: 8,
-                  height: 44,
-                }}
-              />
-            </Form.Item>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-              <div />
-              <a href="#" style={{ color: '#4e8cff', fontSize: 13, textDecoration: 'none' }}>Lupa password?</a>
-            </div>
-
-            <Form.Item style={{ marginBottom: 0 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                style={{
-                  width: '100%',
-                  height: 44,
-                  background: '#4e8cff',
-                  border: 'none',
-                  borderRadius: 8,
-                  color: '#fff',
-                  fontWeight: 600,
-                  fontSize: 16,
-                  letterSpacing: 1,
-                }}
-              >
-                {loading ? 'Loading...' : 'Masuk'}
-              </Button>
-            </Form.Item>
-          </Form>
-
-          <div style={{ textAlign: 'center', marginTop: 28 }}>
-            <span style={{ color: '#fff', fontSize: 14 }}>Belum punya akun?{' '}</span>
-            <a href="/register" style={{ color: '#4e8cff', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>Daftar sekarang</a>
-          </div>
-        </Card>
-        {/* Custom style for white placeholder and eye icon */}
-        <style>{`
-          input::placeholder, .ant-input::placeholder, .ant-input-password input::placeholder {
-            color: #fff !important;
-            opacity: 1 !important;
-          }
-          .ant-input-password-icon {
-            color: #fff !important;
-          }
-          .ant-input-password-icon:hover, .ant-input-password-icon:focus {
-            color: #fff !important;
-          }
-        `}</style>
+    <div style={{ maxWidth: 400, margin: '40px auto', background: '#232323', padding: 24, borderRadius: 10, color: '#fff' }}>
+      <form onSubmit={handleSubmit}>
+        <input name="username" value={form.username} onChange={handleChange} placeholder="Username" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #444', background: '#2c2c2c', color: '#fff', marginBottom: 12 }} />
+        <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #444', background: '#2c2c2c', color: '#fff', marginBottom: 12 }} />
+        <button type="submit" style={{ width: '100%', padding: 10, borderRadius: 6, background: '#4e8cff', color: '#fff', border: 'none', fontWeight: 600 }}>Login</button>
+        {error && <div style={{color: "red", marginTop: 10}}>{error}</div>}
+      </form>
+      <div style={{ textAlign: 'center', marginTop: 18 }}>
+        <span style={{ color: '#fff', fontSize: 14 }}>Belum punya akun?{' '}</span>
+        <a href="/register" style={{ color: '#4e8cff', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>Daftar sekarang</a>
       </div>
-    </AuthLayout>
+    </div>
   );
-}
+};
+
+export default LoginPage;
