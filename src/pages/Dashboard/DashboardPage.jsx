@@ -63,7 +63,7 @@ export default function DashboardPage() {
           <Col key={index} xs={24} sm={12} md={12} lg={8} xl={6}>
             <Card
               hoverable
-              bordered={false}
+              variant="borderless"
               className={`rounded-xl transition-transform duration-300 hover:scale-[1.03] shadow-lg ${
                 game.highlight ? 'border border-yellow-500' : ''
               }`}
@@ -71,9 +71,11 @@ export default function DashboardPage() {
                 backgroundColor: '#2c2c2e',
                 color: '#fff',
               }}
-              bodyStyle={{
-                backgroundColor: '#2c2c2e',
-                padding: '16px',
+              styles={{
+                body: {
+                  backgroundColor: '#2c2c2e',
+                  padding: '16px',
+                }
               }}
               cover={
                 <img

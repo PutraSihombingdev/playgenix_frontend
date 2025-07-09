@@ -3,7 +3,7 @@ import { Card, Button } from 'antd';
 
 const StoreCard = ({ data }) => {
   return (
-    <Card title={data.name} bordered>
+    <Card title={data.name} variant="bordered">
       <p>Game: {data.game}</p>
       <p>Harga: Rp{data.price.toLocaleString()}</p>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>

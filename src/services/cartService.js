@@ -8,7 +8,7 @@ function getToken(token) {
 export const getCart = async (token) => {
   try {
     const res = await api.get('/cart/', {
-      headers: { 'Authorization': `Bearer ${getToken(token)}` }
+      headers: { 'Authorization': `Bearer ${token}` }
     });
     return res.data;
   } catch (err) {

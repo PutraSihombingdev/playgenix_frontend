@@ -51,3 +51,11 @@ export const updatePaymentStatus = async (id, status, token) => {
     throw err.response?.data?.message || 'Gagal update status pembayaran';
   }
 };
+
+// Tambahkan fungsi uploadBukti
+export const uploadBukti = (formData) =>
+  api.post('/payment/upload-bukti', formData, {
+    headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${getToken()}` },
+  });
+
+export default { getPayments, createPayment, updatePaymentStatus, uploadBukti };

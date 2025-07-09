@@ -105,7 +105,9 @@ export default function UserManagement() {
             borderRadius: 12,
             border: '1px solid #333',
           }}
-          bodyStyle={{ padding: 24 }}
+          styles={{
+            body: { padding: 24 }
+          }}
         >
           <div
             style={{

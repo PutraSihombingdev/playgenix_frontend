@@ -31,8 +31,6 @@ export default function Sidebar() {
     { key: '/store', icon: <ShopOutlined />, label: 'Store' },
     { key: '/store-user', icon: <ShopOutlined />, label: 'Store User' },
     { key: '/cart', icon: <ShoppingCartOutlined />, label: 'Cart' },
-    { key: '/payments', icon: <CreditCardOutlined />, label: 'Payment' },
-    { key: '/user-management', icon: <UserOutlined />, label: 'User' },
     { key: '/transactions', icon: <SwapOutlined />, label: 'Transaksi' },
     { key: '/review', icon: <StarOutlined />, label: 'Review' },
     { key: '/logout', icon: <LogoutOutlined />, label: 'Logout' },

@@ -4,6 +4,7 @@ import AdminLayout from '../../layouts/AdminLayout';
 import { getCart, removeFromCart } from '../../services/cartService';
 import { useAuth } from '../../hooks/useAuth';
 import { message } from 'antd'; // Added message import
+import { checkoutCart } from "../../services/transactionService";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -16,8 +17,9 @@ const CartPage = () => {
     try {
       setLoading(true);
       const res = await getCart(token);
-      // Asumsi response dari backend berisi array cart items dengan data produk
-      setCartItems(Array.isArray(res) ? res : []);
+      // Tambahkan checked: true pada setiap item
+      const items = (Array.isArray(res) ? res : []).map(item => ({ ...item, checked: true }));
+      setCartItems(items);
     } catch (err) {
       console.error('Gagal mengambil keranjang:', err);
       setCartItems([]);
@@ -27,8 +29,12 @@ const CartPage = () => {
   };
 
   useEffect(() => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
     fetchCart();
-  }, []);
+  }, [token]);
 
   const handleCheck = (id) => {
     setCartItems((prev) => prev.map(item => item.id === id ? { ...item, checked: !item.checked } : item));
@@ -47,6 +53,22 @@ const CartPage = () => {
   const total = cartItems
     .filter(item => item.checked)
     .reduce((acc, item) => acc + (item.product?.price || item.price || 0), 0);
+
+  // Setelah user klik "Checkout"
+  const handleCheckout = async () => {
+    const selectedItems = cartItems.filter(item => item.checked);
+    if (selectedItems.length === 0) {
+      alert("Pilih minimal satu produk untuk checkout!");
+      return;
+    }
+    try {
+      const res = await checkoutCart();
+      const { transaction_id, amount } = res;
+      navigate("/payments", { state: { transaction_id, amount } });
+    } catch (err) {
+      alert("Checkout gagal: " + (err?.response?.data?.message || "Unknown error"));
+    }
+  };
 
   if (loading) {
     return (
@@ -164,19 +186,17 @@ const CartPage = () => {
                     Rp {Number(total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </div>
                   <button 
-                    onClick={() => {
-                      console.log("Total yang dikirim ke Payment:", total);
-                      navigate('/payments', { state: { total } });
-                    }} 
+                    onClick={handleCheckout}
+                    disabled={cartItems.filter(item => item.checked).length === 0}
                     style={{
-                      background: '#4e8cff',
+                      background: cartItems.filter(item => item.checked).length === 0 ? '#888' : '#4e8cff',
                       color: '#fff',
                       border: 'none',
                       borderRadius: 6,
                       padding: '12px 32px',
                       fontWeight: 500,
                       fontSize: 16,
-                      cursor: 'pointer'
+                      cursor: cartItems.filter(item => item.checked).length === 0 ? 'not-allowed' : 'pointer'
                     }}
                   >
                     Pilih metode pembayaran

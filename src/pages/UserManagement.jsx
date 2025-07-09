@@ -120,7 +120,9 @@ export default function UserManagement() {
             overflow: 'hidden',
             boxShadow: '0 2px 10px rgba(0,0,0,0.4)',
           }}
-          bodyStyle={{ padding: 24 }}
+          styles={{
+            body: { padding: 24 }
+          }}
         >
           <div
             style={{
