@@ -70,7 +70,7 @@ export default function DashboardPage() {
           animation: 'slideInLeft 1.2s cubic-bezier(.68,-0.55,.27,1.55)',
         }}>
           <div style={{
-            background: 'rgba(44,62,80,0.18)',
+            background: 'linear-gradient(135deg, rgba(76,0,130,0.18) 0%, rgba(80,120,255,0.18) 100%)',
             borderRadius: 18,
             padding: '32px 18px 24px 18px',
             boxShadow: '0 2px 16px #4e8cff22',
@@ -80,20 +80,41 @@ export default function DashboardPage() {
             gap: 8,
             width: '100%',
             maxWidth: 340,
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
           }}>
             <img src={playgenixLogo} alt="Playgenix Logo" style={{ width: 200, height: 200, objectFit: 'contain', filter: 'drop-shadow(0 4px 24px #4e8cff88)' }} />
-            <span style={{
-              color: '#4e8cff',
-              fontSize: 18,
-              fontWeight: 800,
-              marginTop: -40,
-              letterSpacing: 1,
-              textAlign: 'center',
-              lineHeight: 1.5,
-              display: 'block',
-              maxWidth: 340
-            }}>
-              Selamat datang di Playgenix!<br />Temukan akun game favoritmu dengan harga terbaik.
+            <span
+              className="welcome-gradient-text"
+              style={{
+                fontSize: 24,
+                fontWeight: 900,
+                marginTop: -40,
+                letterSpacing: 1,
+                textAlign: 'center',
+                lineHeight: 1.5,
+                display: 'block',
+                maxWidth: 340,
+                background: 'linear-gradient(90deg, #4e8cff 0%, rgb(152, 81, 207) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 2px 16px #4e8cff88)',
+                animation: 'fadeInWelcome 1.2s cubic-bezier(.68,-0.55,.27,1.55)',
+              }}
+            >
+              Selamat datang di Playgenix!<br />
+              <span style={{
+                fontWeight: 700,
+                fontSize: 18,
+                color: '#fff',
+                WebkitTextFillColor: 'unset',
+                background: 'none',
+                textShadow: '0 2px 16px #51cf6688, 0 0 32px #4e8cffcc',
+                display: 'inline-block',
+                marginTop: 8,
+              }}>
+                Temukan akun game favoritmu dengan harga terbaik.
+              </span>
             </span>
           </div>
         </div>
@@ -145,18 +166,37 @@ export default function DashboardPage() {
             maxWidth: 340,
           }}>
             <img src={playgenixLogo} alt="Playgenix Logo" style={{ width: 200, height: 200, objectFit: 'contain', filter: 'drop-shadow(0 4px 24px #4e8cff88)' }} />
-            <span style={{
-              color: '#4e8cff',
-              fontSize: 18,
-              fontWeight: 800,
-              marginTop: -40,
-              letterSpacing: 1,
-              textAlign: 'center',
-              lineHeight: 1.5,
-              display: 'block',
-              maxWidth: 340
-            }}>
-              Selamat datang di Playgenix!<br />Temukan akun game favoritmu dengan harga terbaik.
+            <span
+              className="welcome-gradient-text"
+              style={{
+                fontSize: 24,
+                fontWeight: 900,
+                marginTop: -40,
+                letterSpacing: 1,
+                textAlign: 'center',
+                lineHeight: 1.5,
+                display: 'block',
+                maxWidth: 340,
+                background: 'linear-gradient(90deg, #4e8cff 0%, rgb(152, 81, 207) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 2px 16px #4e8cff88)',
+                animation: 'fadeInWelcome 1.2s cubic-bezier(.68,-0.55,.27,1.55)',
+              }}
+            >
+              Selamat datang di Playgenix!<br />
+              <span style={{
+                fontWeight: 700,
+                fontSize: 18,
+                color: '#fff',
+                WebkitTextFillColor: 'unset',
+                background: 'none',
+                textShadow: '0 2px 16px #51cf6688, 0 0 32px #4e8cffcc',
+                display: 'inline-block',
+                marginTop: 8,
+              }}>
+                Temukan akun game favoritmu dengan harga terbaik.
+              </span>
             </span>
           </div>
         </div>
@@ -167,7 +207,7 @@ export default function DashboardPage() {
           }
           @keyframes glowWelcome {
             0% { text-shadow: 0 2px 16px #4e8cff88, 0 0 32px #fff2; }
-            100% { text-shadow: 0 2px 32px #51cf66cc, 0 0 48px #4e8cffcc; }
+            100% { text-shadow: 0 2px 32pxrgba(255, 255, 255, 0.8), 0 0 48px #4e8cffcc; }
           }
           @keyframes slideInLeft {
             0% { opacity: 0; transform: translateX(-60px) scale(0.9); }
@@ -177,21 +217,19 @@ export default function DashboardPage() {
             0% { opacity: 0; transform: translateX(60px) scale(0.9); }
             100% { opacity: 1; transform: translateX(0) scale(1); }
           }
+          .welcome-gradient-text {
+            background: linear-gradient(90deg, #4e8cff 0%,rgb(152, 81, 207) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 16px #4e8cff88, 0 0 32px #51cf6688;
+            animation: glowWelcome 2.5s ease-in-out infinite alternate;
+          }
           @media (max-width: 900px) {
             .welcome-animated { display: none !important; }
           }
         `}</style>
       </div>
 
-      {/* CTA Section */}
-      <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <Title level={4} style={{ color: '#fff', marginBottom: 0 }}>
-          Menyediakan Penjualan Akun Game Original & Terpercaya
-        </Title>
-        <Text style={{ color: '#bdbdbd', fontSize: 16 }}>
-          Temukan akun game favoritmu dengan harga terbaik dan proses mudah hanya di PlayGenix!
-        </Text>
-      </div>
 
       {/* Game Cards */}
       <Row gutter={[20, 20]} justify="center">
