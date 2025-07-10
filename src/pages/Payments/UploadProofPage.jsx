@@ -33,8 +33,8 @@ const UploadProofPage = () => {
   };
 
   return (
-    <div className="auth-bg">
-      <form className="auth-card" onSubmit={handleSubmit} style={{ maxWidth: 400 }}>
+    <div style={{ minHeight: '100vh', background: '#18181c', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ maxWidth: 420, width: '100%', margin: '40px auto', background: '#45475a', borderRadius: 22, boxShadow: '0 8px 40px #0002', padding: 36 }}>
         <h2 className="auth-title">Upload Bukti Pembayaran</h2>
         <div className="auth-field">
           <label>Metode Pembayaran</label>
@@ -51,7 +51,7 @@ const UploadProofPage = () => {
         <button type="submit" className="auth-btn" disabled={loading}>
           {loading ? 'Mengupload...' : 'Upload'}
         </button>
-      </form>
+      </div>
     </div>
   );
 };

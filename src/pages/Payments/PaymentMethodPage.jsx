@@ -69,7 +69,7 @@ const PaymentMethodPage = () => {
   };
 
   return (
-    <div className="auth-bg" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+    <div className="auth-bg" style={{ minHeight: '100vh', background: '#18181c', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <Card
         style={{
           maxWidth: 440,

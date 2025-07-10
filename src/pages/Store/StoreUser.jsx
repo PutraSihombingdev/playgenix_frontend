@@ -11,6 +11,24 @@ import { getAllProducts, addProduct, updateProduct, deleteProduct } from "../../
 import { useAuth } from '../../hooks/useAuth';
 import { addToCart } from "../../services/cartService";
 import { useNavigate } from "react-router-dom";
+import '../../Login.css';
+
+const staticCategories = [
+  { label: 'Semua', value: '' },
+  { label: 'Mobile Legend', value: 'Mobile Legend' },
+  { label: 'Free Fire', value: 'Free Fire' },
+  { label: 'PUBG', value: 'PUBG' },
+  { label: 'Valorant', value: 'Valorant' },
+];
+function getProductCategory(name) {
+  if (!name) return '';
+  const lower = name.toLowerCase();
+  if (lower.includes('mobile legend')) return 'Mobile Legend';
+  if (lower.includes('free fire')) return 'Free Fire';
+  if (lower.includes('pubg')) return 'PUBG';
+  if (lower.includes('valorant')) return 'Valorant';
+  return 'Lainnya';
+}
 
 const StoreUser = () => {
   const { token } = useAuth();
@@ -19,6 +37,7 @@ const StoreUser = () => {
   const [form, setForm] = useState({ name: '', price: '', description: '', image_url: '' });
   const [showDetail, setShowDetail] = useState(false);
   const [detailData, setDetailData] = useState(null);
+  const [category, setCategory] = useState('');
 
   // Ambil data produk dari backend saat mount
   useEffect(() => {
@@ -79,63 +98,56 @@ const StoreUser = () => {
 
   return (
     <AdminLayout>
-      <div style={{ color: 'white', padding: '10px' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '12px' }}>Store User</h2>
-
-        <div style={{ maxWidth: '300px', marginBottom: '12px' }}>
-          <Input
-            placeholder="Search"
-            prefix={<SearchOutlined style={{ color: '#fff' }} />}
+      <div className="store-container">
+        <h2 className="store-title">Daftar Produk</h2>
+        <div className="store-header-bar">
+          <Input.Search
+            placeholder="Cari produk..."
+            allowClear
+            value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            style={{
-              backgroundColor: '#2a2a2a',
-              border: '1px solid #444',
-              color: 'white'
-            }}
+            style={{ width: 300 }}
           />
         </div>
-
-        <div style={{ marginBottom: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <Tag color="#a855f7" style={{ cursor: 'pointer', padding: '3px 12px' }}>Top</Tag>
-          <Tag style={{ background: '#333', color: 'white', cursor: 'pointer' }}>Popular</Tag>
-          <Tag style={{ background: '#333', color: 'white', cursor: 'pointer' }}>Recommended</Tag>
-          <Tag icon={<FilterOutlined />} style={{ background: '#444', color: 'white', cursor: 'pointer' }}>Filter</Tag>
-        </div>
-
-
-        <Row gutter={[12, 12]} style={{ marginTop: 20 }}>
-          {filteredAccounts.map(product => (
-            <Col xs={24} sm={12} md={8} key={product.id}>
-              <div style={{ background: '#2c2c2c', borderRadius: 10, padding: 16 }}>
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8 }}
-                />
-                <h3>{product.name}</h3>
-                <p>Harga: Rp{Number(product.price).toLocaleString()}</p>
-                <p>{product.description}</p>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <Button
-                    icon={<ShoppingCartOutlined />}
-                    style={{ backgroundColor: '#333', color: 'white', border: 'none' }}
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    Tambahkan ke Keranjang
-                  </Button>
-                  <Button
-                    icon={<EyeOutlined />}
-                    style={{ backgroundColor: '#eee', color: '#232323', border: 'none' }}
-                    onClick={() => handleShowDetail(product)}
-                  >
-                    Detail
-                  </Button>
-                </div>
-              </div>
-            </Col>
+        <div className="store-category-bar">
+          {staticCategories.map(cat => (
+            <button
+              key={cat.value}
+              className={`category-btn${category === cat.value ? ' active' : ''}`}
+              onClick={() => setCategory(cat.value)}
+              type="button"
+            >
+              {cat.label}
+            </button>
           ))}
+        </div>
+        <Row gutter={[24, 24]}>
+          {filteredAccounts
+            .filter(product =>
+              (category === '' || getProductCategory(product.name) === category) &&
+              product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map(product => (
+              <Col xs={24} sm={12} md={12} lg={12} key={product.id}>
+                <div className="store-card">
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    className="store-card-img"
+                  />
+                  <div className="store-card-header-flex">
+                    <h3 className="store-card-title" style={{ flex: 1 }}>{product.name}</h3>
+                    <span className="store-card-price-right-flex">Rp{Number(product.price).toLocaleString()}</span>
+                  </div>
+                  <p className="store-card-desc">{product.description}</p>
+                  <div className="store-card-actions-game">
+                    <button className="btn-game btn-game-detail"><EyeOutlined style={{ fontSize: 20 }} /><span>Detail</span></button>
+                    <button className="btn-game btn-game-edit"><ShoppingCartOutlined style={{ fontSize: 20 }} /><span>Keranjang</span></button>
+                  </div>
+                </div>
+              </Col>
+            ))}
         </Row>
-
         <Modal
           open={showDetail}
           onCancel={() => setShowDetail(false)}

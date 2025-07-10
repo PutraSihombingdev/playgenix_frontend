@@ -21,6 +21,7 @@ function ProtectedRoute({ children }) {
 }
 
 export default function AppRoutes() {
+  const { user } = useAuth();
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
@@ -31,7 +32,7 @@ export default function AppRoutes() {
           <ProtectedRoute>
             <Routes>
               <Route path="/" element={<DashboardPage />} />
-              <Route path="/store" element={<StoreListPage />} />
+              <Route path="/store" element={user?.role === 'admin' ? <StoreListPage /> : <StoreUser />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/payments" element={<PaymentMethodPage />} />
               <Route path="/review" element={<ReviewPage />} />

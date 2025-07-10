@@ -9,15 +9,17 @@ export default function AdminLayout({ children }) {
       <Sider
         width={220}
         theme="dark"
-        className="!bg-[#141414]"
+        className="!bg-[#141414] sidebar-gradient"
         style={{
-          overflow: 'auto',
+          overflow: 'hidden',
           height: '100vh',
           position: 'fixed',
           left: 0,
           top: 0,
           bottom: 0,
           zIndex: 1000,
+          borderRight: '1.5px solid #223',
+          boxShadow: '2px 0 16px 0 #0004',
         }}
       >
         <div className="text-white text-center font-bold py-4 text-xl border-b border-gray-700">

@@ -61,7 +61,10 @@ export default function Sidebar() {
         height: '100%',
         paddingTop: 20,
         borderRight: 0,
+        fontWeight: 600,
+        fontSize: 16,
       }}
+      className="sidebar-menu-custom"
     />
   );
 }
