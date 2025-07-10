@@ -24,7 +24,7 @@ const UploadProofPage = () => {
     try {
       await uploadPaymentProof({ file, method, total });
       message.success('Bukti pembayaran berhasil diupload! Menunggu verifikasi admin.');
-      navigate('/transactions');
+      setTimeout(() => navigate('/transactions'), 1800);
     } catch (err) {
       message.error(err?.response?.data?.error || err?.message || 'Gagal upload bukti pembayaran');
     } finally {

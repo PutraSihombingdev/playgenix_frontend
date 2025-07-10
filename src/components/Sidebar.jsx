@@ -10,9 +10,9 @@ import {
   ShoppingCartOutlined,
   ShoppingOutlined,
 } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Menu, Modal } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 
 export default function Sidebar() {
@@ -20,15 +20,19 @@ export default function Sidebar() {
   const location = useLocation();
   const { user } = useContext(AuthContext);
   const role = user?.role || 'user';
+  const [logoutConfirmVisible, setLogoutConfirmVisible] = useState(false);
 
   const handleMenuClick = ({ key }) => {
     if (key === '/logout') {
-      console.log('Logout clicked');
-      localStorage.clear();
-      navigate('/login');
+      setLogoutConfirmVisible(true);
     } else {
       navigate(key);
     }
+  };
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+    setLogoutConfirmVisible(false);
   };
 
   // Filter menu berdasarkan role
@@ -51,20 +55,33 @@ export default function Sidebar() {
   }
 
   return (
-    <Menu
-      mode="inline"
-      theme="dark"
-      selectedKeys={[location.pathname]}
-      onClick={handleMenuClick}
-      items={menuItems}
-      style={{
-        height: '100%',
-        paddingTop: 20,
-        borderRight: 0,
-        fontWeight: 600,
-        fontSize: 16,
-      }}
-      className="sidebar-menu-custom"
-    />
+    <>
+      <Menu
+        mode="inline"
+        theme="dark"
+        selectedKeys={[location.pathname]}
+        onClick={handleMenuClick}
+        items={menuItems}
+        style={{
+          height: '100%',
+          paddingTop: 20,
+          borderRight: 0,
+          fontWeight: 600,
+          fontSize: 16,
+        }}
+        className="sidebar-menu-custom"
+      />
+      <Modal
+        open={logoutConfirmVisible}
+        onOk={handleLogout}
+        onCancel={() => setLogoutConfirmVisible(false)}
+        okText="Ya, Logout"
+        cancelText="Batal"
+        centered
+        title="Konfirmasi Logout"
+      >
+        <p>Apakah yakin untuk Log out?</p>
+      </Modal>
+    </>
   );
 }

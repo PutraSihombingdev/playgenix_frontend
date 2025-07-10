@@ -58,7 +58,7 @@ const PaymentMethodPage = () => {
           }
         }
         setTimeout(() => {
-          window.location.href = '/cart';
+          window.location.href = '/transactions';
         }, 2000);
       })
       .catch((err) => {

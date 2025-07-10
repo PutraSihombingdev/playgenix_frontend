@@ -38,6 +38,7 @@ const StoreUser = () => {
   const [showDetail, setShowDetail] = useState(false);
   const [detailData, setDetailData] = useState(null);
   const [category, setCategory] = useState('');
+  const [openDetailId, setOpenDetailId] = useState(null);
 
   // Ambil data produk dari backend saat mount
   useEffect(() => {
@@ -83,10 +84,8 @@ const StoreUser = () => {
   const handleAddToCart = async (product) => {
     try {
       await addToCart({ product_id: product.id, quantity: 1 }, token);
-      console.log('Berhasil add to cart');
       message.success('Produk sudah dimasukkan ke keranjang');
     } catch (err) {
-      console.log('Gagal add to cart', err);
       message.error(err?.response?.data?.error || err?.response?.data?.message || err?.message || "Gagal menambah ke keranjang");
     }
   };
@@ -141,8 +140,20 @@ const StoreUser = () => {
                   </div>
                   <p className="store-card-desc">{product.description}</p>
                   <div className="store-card-actions-game">
-                    <button className="btn-game btn-game-detail"><EyeOutlined style={{ fontSize: 20 }} /><span>Detail</span></button>
-                    <button className="btn-game btn-game-edit"><ShoppingCartOutlined style={{ fontSize: 20 }} /><span>Keranjang</span></button>
+                    <button
+                      className="btn-game btn-game-detail"
+                      onClick={() => { setShowDetail(true); setDetailData(product); }}
+                    >
+                      <EyeOutlined style={{ fontSize: 20 }} />
+                      <span>Detail</span>
+                    </button>
+                    <button
+                      className="btn-game btn-game-edit"
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      <ShoppingCartOutlined style={{ fontSize: 20 }} />
+                      <span>Keranjang</span>
+                    </button>
                   </div>
                 </div>
               </Col>
@@ -152,14 +163,25 @@ const StoreUser = () => {
           open={showDetail}
           onCancel={() => setShowDetail(false)}
           footer={null}
-          title="Detail Produk"
+          title={<span style={{ color: '#222', fontWeight: 700, fontSize: 24 }}>Detail Produk</span>}
+          bodyStyle={{ background: '#232323', borderRadius: 16, padding: 32 }}
+          style={{ borderRadius: 16 }}
         >
           {detailData && (
             <div>
-              <img src={detailData.image_url} alt={detailData.name} style={{ width: '100%', maxHeight: 200, objectFit: 'cover', marginBottom: 16 }} />
-              <p><strong>Nama:</strong> {detailData.name}</p>
-              <p><strong>Harga:</strong> Rp{Number(detailData.price).toLocaleString()}</p>
-              <p><strong>Deskripsi:</strong> {detailData.description}</p>
+              <img src={detailData.image_url} alt={detailData.name} style={{ width: '100%', maxHeight: 240, objectFit: 'cover', borderRadius: 12, marginBottom: 24 }} />
+              <div style={{ marginBottom: 18 }}>
+                <span style={{ fontWeight: 700, color: '#fff', fontSize: 17 }}>Nama:</span>
+                <span style={{ color: '#fff', fontSize: 16, marginLeft: 8 }}>{detailData.name}</span>
+              </div>
+              <div style={{ marginBottom: 18 }}>
+                <span style={{ fontWeight: 700, color: '#fff', fontSize: 17 }}>Harga:</span>
+                <span style={{ color: '#2ecc40', fontSize: 16, marginLeft: 8 }}>Rp{Number(detailData.price).toLocaleString()}</span>
+              </div>
+              <div style={{ marginBottom: 8 }}>
+                <span style={{ fontWeight: 700, color: '#fff', fontSize: 17 }}>Deskripsi:</span>
+                <span style={{ color: '#bdbdbd', fontSize: 16, marginLeft: 8 }}>{detailData.description}</span>
+              </div>
             </div>
           )}
         </Modal>
