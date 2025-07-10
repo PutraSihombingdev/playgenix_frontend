@@ -128,31 +128,31 @@ const StoreUser = () => {
             )
             .map(product => (
               <Col xs={24} sm={12} md={12} lg={12} key={product.id}>
-                <div className="store-card">
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="store-card-img"
-                  />
-                  <div className="store-card-header-flex">
-                    <h3 className="store-card-title" style={{ flex: 1 }}>{product.name}</h3>
-                    <span className="store-card-price-right-flex">Rp{Number(product.price).toLocaleString()}</span>
+                <div className="store-card-alt">
+                  <div className="store-card-img-alt">
+                    <img src={product.image_url} alt={product.name} />
                   </div>
-                  <p className="store-card-desc">{product.description}</p>
-                  <div className="store-card-actions-game">
+                  <div className="store-card-info-alt">
+                    <div className="store-card-row">
+                      <span className="store-card-title-alt">{product.name}</span>
+                      <span className="store-card-price-alt">Rp{Number(product.price).toLocaleString()}</span>
+                    </div>
+                    <div className="store-card-desc-alt">{product.description}</div>
+                  </div>
+                  <div className="store-card-actions-alt">
                     <button
-                      className="btn-game btn-game-detail"
+                      className="btn-alt btn-detail"
+                      type="button"
                       onClick={() => { setShowDetail(true); setDetailData(product); }}
                     >
-                      <EyeOutlined style={{ fontSize: 20 }} />
-                      <span>Detail</span>
+                      <EyeOutlined /> Detail
                     </button>
                     <button
-                      className="btn-game btn-game-edit"
+                      className="btn-alt btn-edit"
+                      type="button"
                       onClick={() => handleAddToCart(product)}
                     >
-                      <ShoppingCartOutlined style={{ fontSize: 20 }} />
-                      <span>Keranjang</span>
+                      <ShoppingCartOutlined /> Keranjang
                     </button>
                   </div>
                 </div>

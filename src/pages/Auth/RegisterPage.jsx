@@ -31,7 +31,7 @@ const RegisterPage = () => {
       <div className="login-panda-container">
         {/* Kiri: Form Register */}
         <div className="login-panda-left">
-          <div className="login-panda-brand">Devstrome Team<span className="login-panda-dot">.</span></div>
+          <div className="login-panda-brand">Devstorm Team<span className="login-panda-dot">.</span></div>
           <h2 className="login-panda-title">DAFTAR AKUN</h2>
           <div className="login-panda-sub">Sudah punya akun? <span className="login-panda-link" onClick={() => navigate('/login')}>Masuk</span></div>
           <form className="login-panda-form" onSubmit={handleRegister}>

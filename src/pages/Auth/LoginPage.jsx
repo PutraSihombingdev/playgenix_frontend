@@ -31,7 +31,7 @@ const LoginPage = () => {
       <div className="login-panda-container">
         {/* Kiri: Form Login */}
         <div className="login-panda-left">
-          <div className="login-panda-brand">Devstrom Team<span className="login-panda-dot">.</span></div>
+          <div className="login-panda-brand">Devstorm Team<span className="login-panda-dot">.</span></div>
           <h2 className="login-panda-title">SELAMAT DATANG KEMBALI!</h2>
           <div className="login-panda-sub">Belum punya akun? <span className="login-panda-link" onClick={() => navigate('/register')}>Daftar</span></div>
           <form className="login-panda-form" onSubmit={handleLogin}>

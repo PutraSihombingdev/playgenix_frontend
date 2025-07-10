@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Row, Col, Input, Modal, Form, InputNumber, message, Select } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import AdminLayout from '../../layouts/AdminLayout';
 import { getAllProducts, addProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { useAuth } from '../../hooks/useAuth';
@@ -37,8 +37,6 @@ const Store = () => {
   const [detailData, setDetailData] = useState(null);
   const [category, setCategory] = useState('');
   const { token } = useAuth();
-  const [addImageFile, setAddImageFile] = useState(null);
-  const [addImagePreview, setAddImagePreview] = useState(null);
 
   // Ambil data produk
   const fetchProducts = async () => {
@@ -56,31 +54,11 @@ const Store = () => {
   }, []);
 
   // Tambah produk
-  const handleAddImageChange = (e) => {
-    const file = e.target.files[0];
-    setAddImageFile(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setAddImagePreview(reader.result);
-      reader.readAsDataURL(file);
-    } else {
-      setAddImagePreview(null);
-    }
-  };
-
   const handleAdd = async (values) => {
     try {
-      let imageUrl = values.image_url;
-      if (addImageFile) {
-        // Simulasi upload file ke backend, ganti dengan API upload gambar jika ada
-        // Misal: const res = await uploadImage(addImageFile); imageUrl = res.url;
-        imageUrl = URL.createObjectURL(addImageFile); // Sementara pakai blob url
-      }
-      await addProduct({ ...values, image_url: imageUrl }, token);
+      await addProduct(values, token);
       message.success('Produk berhasil ditambahkan!');
       setShowAdd(false);
-      setAddImageFile(null);
-      setAddImagePreview(null);
       fetchProducts();
     } catch (err) {
       message.error(err?.response?.data?.error || 'Gagal menambah produk');
@@ -203,7 +181,7 @@ const Store = () => {
         </Row>
 
         {/* Modal Tambah Produk */}
-        <Modal open={showAdd} onCancel={() => { setShowAdd(false); setAddImageFile(null); setAddImagePreview(null); }} footer={null} title="Tambah Produk">
+        <Modal open={showAdd} onCancel={() => setShowAdd(false)} footer={null} title="Tambah Produk">
           <Form layout="vertical" onFinish={handleAdd}>
             <Form.Item label="Nama Produk" name="name" rules={[{ required: true, message: 'Nama wajib diisi' }]}>
               <Input />
@@ -214,16 +192,11 @@ const Store = () => {
             <Form.Item label="Deskripsi" name="description">
               <Input.TextArea rows={3} />
             </Form.Item>
-            <Form.Item label="Foto Produk (gambar)" name="image_url" rules={[{ required: true, message: 'Foto wajib diisi' }]}>
-              <input type="file" accept="image/*" onChange={handleAddImageChange} style={{ marginBottom: 10 }} />
-              {addImagePreview && (
-                <div style={{ marginBottom: 10 }}>
-                  <img src={addImagePreview} alt="Preview" style={{ maxWidth: 180, maxHeight: 120, borderRadius: 8, boxShadow: '0 2px 8px #0003' }} />
-                </div>
-              )}
+            <Form.Item label="URL Gambar" name="image_url">
+              <Input />
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit" icon={<UploadOutlined />}>Simpan</Button>
+              <Button type="primary" htmlType="submit">Simpan</Button>
             </Form.Item>
           </Form>
         </Modal>
