@@ -8,6 +8,7 @@ import {
   StarOutlined,
   LogoutOutlined,
   ShoppingCartOutlined,
+  ShoppingOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -35,7 +36,7 @@ export default function Sidebar() {
     { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
     { key: '/store', icon: <ShopOutlined />, label: 'Store' },
     { key: '/store-user', icon: <ShoppingCartOutlined />, label: 'Shop' },
-    { key: '/cart', icon: <ShoppingCartOutlined />, label: 'Cart' },
+    { key: '/cart', icon: <ShoppingOutlined />, label: 'Cart' },
     { key: '/transactions', icon: <SwapOutlined />, label: 'Transaksi' },
     { key: '/review', icon: <StarOutlined />, label: 'Review' },
     { key: '/logout', icon: <LogoutOutlined />, label: 'Logout' },
