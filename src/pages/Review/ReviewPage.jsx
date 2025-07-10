@@ -309,7 +309,9 @@ const ReviewPage = () => {
                     />
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                        <span style={{ fontWeight: 600, fontSize: 16 }}>{review.userName || `User ${review.user_id}`}</span>
+                        <span style={{ fontWeight: 600, fontSize: 16 }}>
+                          {review.username || `User ${review.user_id}`}
+                        </span>
                         <span style={{ color: '#bdbdbd', fontSize: 14 }}>
                           {new Date(review.created_at || review.date).toLocaleDateString('id-ID', {
                             year: 'numeric',

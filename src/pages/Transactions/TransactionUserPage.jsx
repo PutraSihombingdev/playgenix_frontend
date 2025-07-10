@@ -156,6 +156,9 @@ const TransactionUserPage = () => {
                         <strong>Total:</strong> Rp{Number(selectedTransaction.total).toLocaleString('id-ID')}
                       </div>
                       <div>
+                        <strong>Deskripsi Produk:</strong> {selectedTransaction.description || '-'}
+                      </div>
+                      <div>
                         <strong>Status:</strong> {statusBadge(getStatus(selectedTransaction))}
                       </div>
                       <div>

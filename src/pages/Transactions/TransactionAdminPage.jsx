@@ -256,7 +256,7 @@ const TransactionAdminPage = () => {
                       <strong>Total:</strong> Rp{Number(selectedTransaction.total).toLocaleString('id-ID')}
                     </div>
                     <div>
-                      <strong>Deskripsi Akun:</strong> {selectedTransaction.account_desc || '-'}
+                      <strong>Deskripsi Produk:</strong> {selectedTransaction.description || '-'}
                     </div>
                     <div>
                       <strong>Status:</strong> {statusBadge(selectedTransaction.status)}
