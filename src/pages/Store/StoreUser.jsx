@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Row, Col, Input, Tag, Modal } from 'antd';
+import { Button, Row, Col, Input, Tag, Modal, message } from 'antd';
 import {
   SearchOutlined,
   FilterOutlined,
@@ -59,14 +59,16 @@ const StoreUser = () => {
     }
   };
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleAddToCart = async (product) => {
     try {
       await addToCart({ product_id: product.id, quantity: 1 }, token);
-      navigate("/cart");
+      console.log('Berhasil add to cart');
+      message.success('Produk sudah dimasukkan ke keranjang');
     } catch (err) {
-      alert(err?.response?.data?.error || err?.response?.data?.message || err?.message || "Gagal menambah ke keranjang");
+      console.log('Gagal add to cart', err);
+      message.error(err?.response?.data?.error || err?.response?.data?.message || err?.message || "Gagal menambah ke keranjang");
     }
   };
 

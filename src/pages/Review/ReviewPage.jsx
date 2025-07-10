@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import reviewService from '../../services/reviewService';
 import { StarFilled, StarOutlined, FilterOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import AdminLayout from '../../layouts/AdminLayout';
-import { Modal, message } from 'antd';
+import { Modal, message, Rate } from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 
 const renderStars = (rating) => (
@@ -167,40 +167,51 @@ const ReviewPage = () => {
             open={showForm}
             onCancel={() => setShowForm(false)}
             footer={null}
-            title={<span style={{ color: '#222' }}>Tambah Review</span>}
-            bodyStyle={{ background: '#232323', borderRadius: 12 }}
+            title={<span style={{ color: '#4e8cff', fontWeight: 700, fontSize: 22 }}>Tambah Review</span>}
+            bodyStyle={{ background: '#232323', borderRadius: 16, padding: 32 }}
+            style={{ borderRadius: 16 }}
           >
-            <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: 16 }}>
-                <label style={{ color: '#fff', fontWeight: 500 }}>Rating (1-5):</label>
-                <input
-                  name="rating"
-                  type="number"
-                  min="1"
-                  max="5"
-                  value={form.rating}
-                  onChange={handleChange}
-                  required
-                  placeholder="Beri rating 1-5"
-                  style={{ width: '100%', marginTop: 4, borderRadius: 6, border: '1px solid #444', padding: 10, background: '#181818', color: '#fff', fontSize: 16 }}
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              <div style={{ marginBottom: 10 }}>
+                <label style={{ color: '#4e8cff', fontWeight: 600, fontSize: 16, marginBottom: 6, display: 'block' }}>Rating:</label>
+                <Rate
+                  allowClear={false}
+                  value={Number(form.rating) || 0}
+                  onChange={val => setForm({ ...form, rating: val })}
+                  style={{ fontSize: 32, color: '#51cf66', background: '#181818', borderRadius: 8, padding: '8px 16px', marginBottom: 4 }}
                 />
               </div>
-              <div style={{ marginBottom: 16 }}>
-                <label style={{ color: '#fff', fontWeight: 500 }}>Komentar:</label>
+              <div style={{ marginBottom: 10 }}>
+                <label style={{ color: '#4e8cff', fontWeight: 600, fontSize: 16, marginBottom: 6, display: 'block' }}>Komentar:</label>
                 <textarea
                   name="comment"
                   value={form.comment}
                   onChange={handleChange}
                   required
                   placeholder="Tulis komentar Anda"
-                  style={{ width: '100%', marginTop: 4, borderRadius: 6, border: '1px solid #444', padding: 10, background: '#181818', color: '#fff', fontSize: 16, minHeight: 70 }}
+                  style={{ width: '100%', borderRadius: 8, border: '1.5px solid #444', padding: 14, background: '#181818', color: '#fff', fontSize: 16, minHeight: 80, resize: 'vertical', boxShadow: '0 2px 8px #0002', transition: 'border 0.2s' }}
                 />
               </div>
-              {formError && <div style={{ color: '#ff6b6b', marginBottom: 12 }}>{formError}</div>}
+              {formError && <div style={{ color: '#ff6b6b', marginBottom: 12, fontWeight: 500 }}>{formError}</div>}
               <button
                 type="submit"
                 disabled={submitting}
-                style={{ padding: '12px 0', background: '#51cf66', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 17, width: '100%' }}
+                style={{
+                  padding: '16px 0',
+                  background: submitting ? '#51cf6699' : '#51cf66',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 10,
+                  fontWeight: 700,
+                  fontSize: 18,
+                  width: '100%',
+                  marginTop: 8,
+                  boxShadow: '0 2px 12px #51cf6622',
+                  cursor: submitting ? 'not-allowed' : 'pointer',
+                  transition: 'background 0.2s, transform 0.2s',
+                }}
+                onMouseOver={e => { if (!submitting) e.currentTarget.style.background = '#43b653'; }}
+                onMouseOut={e => { if (!submitting) e.currentTarget.style.background = '#51cf66'; }}
               >
                 {submitting ? 'Mengirim...' : 'Kirim Review'}
               </button>

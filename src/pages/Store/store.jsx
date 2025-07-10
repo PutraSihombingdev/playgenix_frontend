@@ -1,17 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Row, Col, Input, Modal, Form, InputNumber, message } from 'antd';
+import { Button, Row, Col, Input, Modal, Form, InputNumber, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import AdminLayout from '../../layouts/AdminLayout';
 import { getAllProducts, addProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { useAuth } from '../../hooks/useAuth';
+import './store.css'; // Tambahkan import CSS untuk styling custom
+
+const staticCategories = [
+  { label: 'Semua', value: '' },
+  { label: 'Mobile Legend', value: 'Mobile Legend' },
+  { label: 'Free Fire', value: 'Free Fire' },
+  { label: 'PUBG', value: 'PUBG' },
+  { label: 'Valorant', value: 'Valorant' },
+  { label: 'Genshin', value: 'Genshin' },
+  // Tambahkan kategori lain jika perlu
+];
+
+function getProductCategory(name) {
+  if (!name) return '';
+  const lower = name.toLowerCase();
+  if (lower.includes('mobile legend')) return 'Mobile Legend';
+  if (lower.includes('free fire')) return 'Free Fire';
+  if (lower.includes('pubg')) return 'PUBG';
+  if (lower.includes('valorant')) return 'Valorant';
+  if (lower.includes('genshin')) return 'Genshin';
+  return 'Lainnya';
+}
 
 const Store = () => {
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState(""); // Tambah state search
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [editData, setEditData] = useState({});
   const [showDetail, setShowDetail] = useState(false);
   const [detailData, setDetailData] = useState(null);
+  const [category, setCategory] = useState('');
   const { token } = useAuth();
 
   // Ambil data produk
@@ -83,32 +107,68 @@ const Store = () => {
 
   return (
     <AdminLayout>
-      <div style={{ color: 'white', padding: '10px' }}>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setShowAdd(true)}>
-          Tambah Produk
-        </Button>
-        <Row gutter={[12, 12]} style={{ marginTop: 20 }}>
-          {products.map(product => (
-            <Col xs={24} sm={12} md={8} key={product.id}>
-              <div style={{ background: '#2c2c2c', borderRadius: 10, padding: 16 }}>
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8 }}
-                />
-                <h3>{product.name}</h3>
-                <p>Harga: Rp{Number(product.price).toLocaleString()}</p>
-                <p>{product.description}</p>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <Button icon={<EyeOutlined />} onClick={() => { setShowDetail(true); setDetailData(product); }}>Detail</Button>
-                  <Button icon={<EditOutlined />} onClick={() => { setShowEdit(true); setEditData(product); }}>Edit</Button>
-                  <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(product.id)}>
-                    Hapus
-                  </Button>
-                </div>
-              </div>
-            </Col>
+      <div className="store-container">
+        <h2 className="store-title">Daftar Produk</h2>
+        <div className="store-header-bar">
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => setShowAdd(true)}>
+            Tambah Produk
+          </Button>
+          <Input.Search
+            placeholder="Cari produk..."
+            allowClear
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ width: 300 }}
+          />
+        </div>
+        <div className="store-category-bar">
+          {staticCategories.map(cat => (
+            <button
+              key={cat.value}
+              className={`category-btn${category === cat.value ? ' active' : ''}`}
+              onClick={() => setCategory(cat.value)}
+              type="button"
+            >
+              {cat.label}
+            </button>
           ))}
+        </div>
+        <Row gutter={[24, 24]}>
+          {products
+            .filter(product =>
+              (category === '' || getProductCategory(product.name) === category) &&
+              product.name.toLowerCase().includes(search.toLowerCase())
+            )
+            .map(product => (
+              <Col xs={24} sm={12} md={12} lg={12} key={product.id}>
+                <div className="store-card">
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    className="store-card-img"
+                  />
+                  <div className="store-card-header-flex">
+                    <h3 className="store-card-title">{product.name}</h3>
+                    <span className="store-card-price-right-flex">Rp{Number(product.price).toLocaleString()}</span>
+                  </div>
+                  <p className="store-card-desc">{product.description}</p>
+                  <div className="store-card-actions-game">
+                    <button className="btn-game btn-game-detail" onClick={() => { setShowDetail(true); setDetailData(product); }}>
+                      <EyeOutlined style={{ fontSize: 20 }} />
+                      <span>Detail</span>
+                    </button>
+                    <button className="btn-game btn-game-edit" onClick={() => { setShowEdit(true); setEditData(product); }}>
+                      <EditOutlined style={{ fontSize: 20 }} />
+                      <span>Edit</span>
+                    </button>
+                    <button className="btn-game btn-game-delete" onClick={() => handleDelete(product.id)}>
+                      <DeleteOutlined style={{ fontSize: 20 }} />
+                      <span>Hapus</span>
+                    </button>
+                  </div>
+                </div>
+              </Col>
+            ))}
         </Row>
 
         {/* Modal Tambah Produk */}

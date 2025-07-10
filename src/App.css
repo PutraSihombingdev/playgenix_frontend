@@ -40,3 +40,119 @@
   opacity: 1 !important;
   font-style: italic;
 }
+
+/* AUTH FORM STYLES */
+.auth-bg {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+}
+
+.auth-card {
+  background: #222;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  min-width: 320px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.auth-title {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.auth-field label {
+  color: #bbb;
+  font-size: 1rem;
+  margin-bottom: 0.1rem;
+}
+
+.auth-field input {
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #181818;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.auth-field input:focus {
+  border: 1.5px solid #4f8cff;
+}
+
+.auth-btn {
+  margin-top: 0.5rem;
+  padding: 0.8rem 0;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #4f8cff 0%, #2353e6 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+}
+
+.auth-btn:hover {
+  background: linear-gradient(90deg, #2353e6 0%, #4f8cff 100%);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.auth-error {
+  color: #ff4d4f;
+  background: #2a1818;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.98rem;
+}
+
+.auth-success {
+  color: #4caf50;
+  background: #182a18;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.98rem;
+}
+
+.auth-link {
+  margin-top: 1rem;
+  text-align: center;
+  color: #bbb;
+  font-size: 1rem;
+}
+.auth-link a {
+  color: #4f8cff;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 0.2rem;
+  transition: color 0.2s;
+}
+.auth-link a:hover {
+  color: #2353e6;
+  text-decoration: underline;
+}
+
+

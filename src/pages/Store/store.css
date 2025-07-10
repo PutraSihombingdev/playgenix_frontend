@@ -1,0 +1,277 @@
+.store-container {
+    color: #fff;
+    padding: 32px 24px;
+    background: #18181c;
+    min-height: 100vh;
+    border-radius: 16px;
+  }
+  
+  .store-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+  }
+  
+  .store-header-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .store-card {
+    background: #23232b;
+    border-radius: 14px;
+    padding: 20px 18px 18px 18px;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.12);
+    transition: transform 0.22s cubic-bezier(.4,2,.6,1), box-shadow 0.22s cubic-bezier(.4,2,.6,1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 370px;
+    position: relative;
+  }
+  
+  .store-card:hover {
+    transform: translateY(-8px) scale(1.035);
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.22);
+    z-index: 2;
+  }
+  
+  .store-card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    background: #222;
+  }
+  
+  .store-card-header-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 12px;
+  }
+  .store-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0;
+    letter-spacing: 0.5px;
+  }
+  .store-card-price-right-flex {
+    color: #2ecc40;
+    font-size: 1.02rem;
+    font-weight: 700;
+    margin-left: auto;
+    text-shadow: 0 2px 8px rgba(46,204,64,0.12);
+    white-space: nowrap;
+    text-align: right;
+    min-width: 90px;
+  }
+  
+  .store-card-desc {
+    font-size: 0.97rem;
+    color: #bdbdbd;
+    margin-bottom: 18px;
+    min-height: 38px;
+  }
+  
+  .store-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+  }
+  
+  .store-card-actions-game {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+  }
+  .btn-game {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
+    background: #23232b;
+    color: #fff;
+    min-width: 0;
+  }
+  .btn-game svg {
+    font-size: 1em !important;
+    margin-bottom: 0;
+  }
+  .btn-game span {
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-top: 0;
+  }
+  .btn-game-detail {
+    align-items: flex-start;
+  }
+  .btn-game-edit {
+    align-items: center;
+  }
+  .btn-game-delete {
+    align-items: flex-end;
+  }
+  .btn-game-detail {
+    background: linear-gradient(90deg, #a020f0 60%, #6c1bbd 100%);
+    color: #fff;
+    box-shadow: 0 0 8px 0 #a020f0a0;
+  }
+  .btn-game-detail:hover {
+    background: linear-gradient(90deg, #c158f5 60%, #a020f0 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 0 16px 0 #a020f0cc;
+  }
+  .btn-game-edit {
+    background: linear-gradient(90deg, #2962ff 60%, #0039cb 100%);
+    color: #fff;
+    box-shadow: 0 0 8px 0 #2962ffa0;
+  }
+  .btn-game-edit:hover {
+    background: linear-gradient(90deg, #5a8cff 60%, #2962ff 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 0 16px 0 #2962ffcc;
+  }
+  .btn-game-delete {
+    background: linear-gradient(90deg, #e53935 60%, #b71c1c 100%);
+    color: #fff;
+    box-shadow: 0 0 8px 0 #e53935a0;
+  }
+  .btn-game-delete:hover {
+    background: linear-gradient(90deg, #ff6f60 60%, #e53935 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 0 16px 0 #e53935cc;
+  }
+  
+  .btn-detail {
+    background: #2d8cf0;
+    color: #fff;
+    border: none;
+    transition: background 0.2s;
+  }
+  .btn-detail:hover, .btn-detail:focus {
+    background: #1769aa;
+    color: #fff;
+  }
+  
+  .btn-edit {
+    background: #ffb300;
+    color: #23232b;
+    border: none;
+    transition: background 0.2s;
+  }
+  .btn-edit:hover, .btn-edit:focus {
+    background: #ff9800;
+    color: #23232b;
+  }
+  
+  .btn-delete {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    transition: background 0.2s;
+  }
+  .btn-delete:hover, .btn-delete:focus {
+    background: #b71c1c;
+    color: #fff;
+  }
+  
+  .store-category-select .ant-select-selector {
+    background: #23232b !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+    border-radius: 8px !important;
+    min-height: 38px;
+  }
+  
+  .store-category-select .ant-select-selection-item {
+    color: #fff !important;
+  }
+  
+  .store-category-select .ant-select-arrow {
+    color: #fff !important;
+  }
+  
+  .store-category-bar {
+    display: flex;
+    gap: 12px;
+    margin: 18px 0 28px 0;
+    flex-wrap: wrap;
+  }
+  
+  .category-btn {
+    background: transparent;
+    color: #fff;
+    border: 2px solid #444;
+    border-radius: 20px;
+    padding: 6px 22px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.18s, color 0.18s, border 0.18s;
+    position: relative;
+  }
+  .category-btn.active, .category-btn:hover, .category-btn:focus {
+    background: #a020f0;
+    color: #fff;
+    border-color: #a020f0;
+  }
+  
+  @media (max-width: 600px) {
+    .store-container {
+      padding: 12px 2px;
+    }
+    .store-header-bar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .store-category-bar {
+      gap: 7px;
+      margin: 12px 0 18px 0;
+    }
+    .category-btn {
+      font-size: 0.97rem;
+      padding: 5px 14px;
+    }
+    .store-card-header-flex {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .store-card-actions-game {
+      gap: 3px;
+      margin-top: 6px;
+    }
+    .btn-game {
+      font-size: 0.7rem;
+      padding: 1px 4px;
+      border-radius: 10px;
+    }
+    .btn-game span {
+      font-size: 0.65rem;
+    }
+  }

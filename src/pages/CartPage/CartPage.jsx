@@ -52,7 +52,11 @@ const CartPage = () => {
 
   const total = cartItems
     .filter(item => item.checked)
-    .reduce((acc, item) => acc + (item.product?.price || item.price || 0), 0);
+    .reduce((acc, item) => {
+      const product = item.product || item;
+      const price = Number(product.price);
+      return acc + (isNaN(price) ? 0 : price);
+    }, 0);
 
   // Setelah user klik "Checkout"
   const handleCheckout = async () => {
@@ -70,6 +74,13 @@ const CartPage = () => {
     }
   };
 
+  // Tambahkan fungsi centang semua
+  const allChecked = cartItems.length > 0 && cartItems.every(item => item.checked);
+  const someChecked = cartItems.some(item => item.checked);
+  const handleCheckAll = () => {
+    setCartItems(prev => prev.map(item => ({ ...item, checked: !allChecked })));
+  };
+
   if (loading) {
     return (
       <AdminLayout>
@@ -84,6 +95,19 @@ const CartPage = () => {
     <AdminLayout>
       <div style={{ background: '#232323', minHeight: '100vh', padding: '40px 0' }}>
         <div style={{ width: 900, margin: '0 auto', color: '#fff', display: 'flex', flexDirection: 'column', gap: 32 }}>
+          {/* Tambahkan centang semua */}
+          {cartItems.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+              <input
+                type="checkbox"
+                checked={allChecked}
+                indeterminate={someChecked && !allChecked ? 'indeterminate' : undefined}
+                onChange={handleCheckAll}
+                style={{ width: 22, height: 22, accentColor: '#4e8cff', cursor: 'pointer', marginRight: 8 }}
+              />
+              <span style={{ fontWeight: 500, fontSize: 16 }}>Centang Semua</span>
+            </div>
+          )}
           
           {cartItems.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px 20px' }}>
@@ -111,6 +135,7 @@ const CartPage = () => {
                 // Handle struktur data yang mungkin berbeda dari backend
                 const product = item.product || item;
                 const cartItemId = item.id;
+                const productPrice = Number(product.price);
                 
                 return (
                   <div key={cartItemId} style={{ background: '#2c2c2c', borderRadius: 12, display: 'flex', alignItems: 'center', padding: 24, gap: 0, boxShadow: '0 2px 8px #0002', minHeight: 150 }}>
@@ -140,7 +165,7 @@ const CartPage = () => {
                         Rp {(product.price || 0).toLocaleString('id-ID')}
                       </div>
                       <button 
-                        onClick={() => navigate('/payments', { state: { item: product } })} 
+                        onClick={() => navigate('/payments', { state: { transaction_id: cartItemId, amount: isNaN(productPrice) ? 0 : productPrice } })} 
                         style={{ background: '#4e8cff', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 32px', fontWeight: 500, fontSize: 16, cursor: 'pointer' }}
                       >
                         Beli
