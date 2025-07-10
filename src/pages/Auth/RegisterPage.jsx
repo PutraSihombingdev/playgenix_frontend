@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import { register as registerApi } from '../../services/authService';
-import api from '../../services/api';
-import qs from 'qs';
+import { useNavigate } from 'react-router-dom';
+import playgenixLogo from '../../assets/images/playgenix-logo.png'; // Gambar logo baru (background hitam)
 import '../../App.css';
-import '../../index.css';
-
-export const register = async (username, email, password) => {
-  return api.post(
-    '/auth/register',
-    qs.stringify({ username, email, password }),
-    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-  );
-};
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');
@@ -19,6 +10,8 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -28,35 +21,69 @@ const RegisterPage = () => {
       await registerApi(username, email, password);
       setSuccess('Register berhasil! Silakan login.');
     } catch (err) {
-      // Ambil pesan error dari response backend, fallback ke pesan default
       const msg = err?.response?.data?.error || err?.message || 'Register gagal';
       setError(msg);
     }
   };
 
   return (
-    <div className="auth-bg">
-      <form onSubmit={handleRegister} className="auth-card">
-        <h2 className="auth-title">Register</h2>
-        <div className="auth-field">
-          <label htmlFor="username">Username</label>
-          <input id="username" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" required />
+    <div className="login-panda-bg">
+      <div className="login-panda-container">
+        {/* Kiri: Form Register */}
+        <div className="login-panda-left">
+          <div className="login-panda-brand">Devstrome Team<span className="login-panda-dot">.</span></div>
+          <h2 className="login-panda-title">DAFTAR AKUN</h2>
+          <div className="login-panda-sub">Sudah punya akun? <span className="login-panda-link" onClick={() => navigate('/login')}>Masuk</span></div>
+          <form className="login-panda-form" onSubmit={handleRegister}>
+            <label className="login-panda-label">Username</label>
+            <div className="login-panda-input-wrap">
+              <input
+                className="login-panda-input"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder="Username Anda"
+                type="text"
+                autoComplete="username"
+                required
+              />
+            </div>
+            <label className="login-panda-label">Email</label>
+            <div className="login-panda-input-wrap">
+              <input
+                className="login-panda-input"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="email@contoh.com"
+                type="email"
+                autoComplete="email"
+                required
+              />
+            </div>
+            <label className="login-panda-label">Password</label>
+            <div className="login-panda-input-wrap">
+              <input
+                className="login-panda-input"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                type={showPassword ? 'text' : 'password'}
+                placeholder="********"
+                autoComplete="new-password"
+                required
+              />
+              <span className="login-panda-link" style={{position:'absolute',right:18,top:14}} onClick={()=>setShowPassword(v=>!v)}>
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </span>
+            </div>
+            <button className="login-panda-btn" type="submit">Daftar</button>
+            {error && <div className="login-panda-error">{error}</div>}
+            {success && <div className="login-panda-success">{success}</div>}
+          </form>
         </div>
-        <div className="auth-field">
-          <label htmlFor="email">Email</label>
-          <input id="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" type="email" required />
+        {/* Kanan: Gambar Logo Playgenix */}
+        <div className="login-panda-right">
+          <img src={playgenixLogo} alt="Playgenix Logo" className="login-playgenix-img" />
         </div>
-        <div className="auth-field">
-          <label htmlFor="password">Password</label>
-          <input id="password" value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="Password" required />
-        </div>
-        <button type="submit" className="auth-btn">Register</button>
-        {error && <div className="auth-error">{error}</div>}
-        {success && <div className="auth-success">{success}</div>}
-        <div className="auth-link">
-          Sudah punya akun? <a href="/login">Login</a>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
